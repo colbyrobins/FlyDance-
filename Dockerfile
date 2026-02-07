@@ -1,9 +1,17 @@
-FROM nginx:1.27-alpine
+FROM python:3.12-slim
 
-# Copy the full folder so any local assets referenced by the HTML remain available.
-COPY . /usr/share/nginx/html/
+WORKDIR /app
 
-# Serve the requested page at "/" for convenient local viewing.
-RUN cp "/usr/share/nginx/html/Phoenix, AZ (1).html" /usr/share/nginx/html/index.html
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV DANCECOMP_DB_PATH=/data/dancecomp.db
 
-EXPOSE 80
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+COPY . /app/
+RUN mkdir -p /data
+
+EXPOSE 8000
+
+CMD ["python", "app.py"]

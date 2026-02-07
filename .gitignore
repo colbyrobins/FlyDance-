@@ -1,1 +1,3 @@
 .docker-temp/
+__pycache__/
+*.db

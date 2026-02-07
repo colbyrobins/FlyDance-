@@ -218,13 +218,16 @@
       background: var(--card);
     }
     tbody tr td {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: minmax(86px, 38%) minmax(0, 1fr);
+      align-items: start;
       gap: 10px;
       padding: 6px 0;
       border-bottom: 1px solid #f3f3f3;
-      text-align: right;
+      text-align: left;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
     tbody tr td:last-child {
       border-bottom: none;
@@ -237,15 +240,16 @@
       letter-spacing: 0.2px;
       text-transform: uppercase;
       text-align: left;
-      flex: 0 0 42%;
+      align-self: start;
     }
     tbody tr.entry-row td {
       display: none;
     }
     tbody tr.entry-row td[data-label="Day"],
     tbody tr.entry-row td[data-label="Time"],
-    tbody tr.entry-row td[data-label="Dance Name"] {
-      display: flex;
+    tbody tr.entry-row td[data-label="Dance Name"],
+    tbody tr.entry-row td[data-label="Dancers"] {
+      display: grid;
     }
     tbody tr.entry-row td[data-label="Dance Name"] {
       font-weight: 700;
@@ -255,11 +259,12 @@
       border-bottom: none;
     }
     tbody tr.entry-row:not(.is-expanded) td[data-label="Day"],
-    tbody tr.entry-row:not(.is-expanded) td[data-label="Time"] {
+    tbody tr.entry-row:not(.is-expanded) td[data-label="Time"],
+    tbody tr.entry-row:not(.is-expanded) td[data-label="Dance Name"] {
       border-bottom: 1px solid #f3f3f3;
     }
     tbody tr.entry-row.is-expanded td {
-      display: flex;
+      display: grid;
     }
     tbody tr.entry-row.is-expanded td[data-label="Dance Name"] {
       color: var(--text);
@@ -287,7 +292,7 @@
       line-height: 1.35;
     }
     .awards-input {
-      width: 58%;
+      width: 100%;
       min-width: 0;
       font-size: 0.9rem;
     }
@@ -434,19 +439,50 @@ const SESSION_LABELS = {
   6: "Session 6 - Sun, Feb 8, 4:45 PM - Senior & Adult Solos"
 };
 
-const LS_KEY = "phoenix_az_awards_";
-
 const tbody = document.getElementById("tbody");
 const searchInput = document.getElementById("search");
 const sessionFilter = document.getElementById("sessionFilter");
 const clearBtn = document.getElementById("clearBtn");
 const countInfo = document.getElementById("countInfo");
+const saveTimers = new Map();
+let awardsByEntry = {};
 
 function getAward(entryNum) {
-  return localStorage.getItem(LS_KEY + entryNum) || "";
+  return awardsByEntry[String(entryNum)] || "";
 }
 function setAward(entryNum, val) {
-  localStorage.setItem(LS_KEY + entryNum, val);
+  awardsByEntry[String(entryNum)] = val;
+}
+
+function queueAwardSave(entryNum, val) {
+  const key = String(entryNum);
+  const existingTimer = saveTimers.get(key);
+  if (existingTimer) clearTimeout(existingTimer);
+  const timer = setTimeout(async () => {
+    saveTimers.delete(key);
+    try {
+      const res = await fetch(`/api/awards/${encodeURIComponent(entryNum)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ award: val })
+      });
+      if (!res.ok) throw new Error(`Save failed with status ${res.status}`);
+    } catch (err) {
+      console.error("Unable to save award:", err);
+    }
+  }, 250);
+  saveTimers.set(key, timer);
+}
+
+async function loadAwards() {
+  try {
+    const res = await fetch("/api/awards");
+    if (!res.ok) throw new Error(`Load failed with status ${res.status}`);
+    awardsByEntry = await res.json();
+  } catch (err) {
+    console.error("Unable to load awards, defaulting to empty:", err);
+    awardsByEntry = {};
+  }
 }
 
 function render() {
@@ -505,7 +541,9 @@ function render() {
   // Attach award input listeners
   tbody.querySelectorAll(".awards-input").forEach(input => {
     input.addEventListener("input", function() {
-      setAward(this.dataset.entry, this.value);
+      const entryNum = Number(this.dataset.entry);
+      setAward(entryNum, this.value);
+      queueAwardSave(entryNum, this.value);
     });
   });
 }
@@ -549,7 +587,7 @@ clearBtn.addEventListener("click", () => {
   render();
 });
 
-render();
+loadAwards().then(render);
 </script>
 </body>
 </html>
