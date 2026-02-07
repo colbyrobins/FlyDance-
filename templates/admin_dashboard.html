@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f7f7f9; color: #222; }
+  .top { display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  a.btn, button.btn { padding: 8px 12px; border: 1px solid #bbb; border-radius: 6px; background: #fff; text-decoration: none; color: #222; cursor: pointer; }
+  .primary { background: #6a1b9a; color: #fff; border-color: #6a1b9a; }
+  table { width: 100%; border-collapse: collapse; background: #fff; margin-top: 16px; }
+  th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; vertical-align: top; }
+  .status { font-weight: 700; text-transform: uppercase; font-size: 0.78rem; }
+  .published { color: #0a7d24; }
+  .draft { color: #a87400; }
+  .archived { color: #666; }
+  .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  form.inline { display: inline; }
+  .flash { padding: 8px 10px; background: #eef9ff; border: 1px solid #c7e8ff; margin-top: 12px; border-radius: 6px; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <h1>Competition Admin</h1>
+    <div class="actions">
+      <a class="btn primary" href="/admin/competitions/new">New Competition</a>
+      <a class="btn" href="/">Open Public App</a>
+      <form class="inline" method="post" action="/admin/logout"><button class="btn" type="submit">Logout</button></form>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="flash">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Slug</th>
+        <th>Dates</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in competitions %}
+      <tr>
+        <td>{{ c.name }}{% if c.location %}<div>{{ c.location }}</div>{% endif %}</td>
+        <td><code>{{ c.slug }}</code></td>
+        <td>{{ c.event_start_date }}{% if c.event_end_date %} to {{ c.event_end_date }}{% endif %}</td>
+        <td>
+          <span class="status {{ c.status }}">{{ c.status }}</span>
+        </td>
+        <td class="actions">
+          <a class="btn" href="/admin/competitions/{{ c.id }}/edit">Edit</a>
+          <a class="btn" href="/c/{{ c.slug }}" target="_blank" rel="noreferrer">View</a>
+          {% if c.status != 'published' %}
+          <form class="inline" method="post" action="/admin/competitions/{{ c.id }}/publish"><button class="btn" type="submit">Publish</button></form>
+          {% endif %}
+          {% if c.status != 'draft' %}
+          <form class="inline" method="post" action="/admin/competitions/{{ c.id }}/draft"><button class="btn" type="submit">Draft</button></form>
+          {% endif %}
+          {% if c.status != 'archived' %}
+          <form class="inline" method="post" action="/admin/competitions/{{ c.id }}/archive"><button class="btn" type="submit">Archive</button></form>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5">No competitions yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

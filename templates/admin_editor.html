@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if mode == 'edit' %}Edit{% else %}New{% endif %} Competition</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f7f7f9; color: #222; }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .row3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .row4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .card { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+  label { display: block; font-size: 0.85rem; margin-bottom: 4px; color: #555; }
+  input, select, textarea, button { width: 100%; box-sizing: border-box; }
+  input, select, textarea { padding: 9px; border: 1px solid #ccc; border-radius: 6px; }
+  textarea { min-height: 220px; font-family: Consolas, monospace; font-size: 0.84rem; }
+  textarea.short { min-height: 120px; }
+  textarea.notes { min-height: 140px; font-family: Arial, sans-serif; font-size: 0.9rem; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  button { border: 1px solid #bbb; background: #fff; border-radius: 6px; padding: 9px 12px; cursor: pointer; }
+  .primary { background: #6a1b9a; color: #fff; border-color: #6a1b9a; }
+  .flash { padding: 8px 10px; background: #fff9ea; border: 1px solid #f0d58b; border-radius: 6px; margin-bottom: 10px; }
+  .small { color: #666; font-size: 0.82rem; }
+  @media (max-width: 800px) { .row, .row3, .row4 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="actions" style="margin-bottom:12px">
+    <a href="/admin">Back to dashboard</a>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="flash">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="card">
+    <h2>PDF Import</h2>
+    <p class="small">Upload a schedule PDF to auto-extract rows, then review and edit before saving.</p>
+    <form method="post" action="/admin/competitions/import-pdf" enctype="multipart/form-data">
+      <div class="row3">
+        <div><label>Name</label><input name="name" value="{{ (competition.name if competition and competition.name else '') }}"></div>
+        <div><label>Location</label><input name="location" value="{{ (competition.location if competition and competition.location else '') }}"></div>
+        <div><label>Slug (optional)</label><input name="slug" value="{{ (competition.slug if competition and competition.slug else '') }}"></div>
+      </div>
+      <div class="row3" style="margin-top:10px">
+        <div><label>Start Date</label><input name="event_start_date" type="date" value="{{ (competition.event_start_date if competition and competition.event_start_date else '') }}"></div>
+        <div><label>End Date</label><input name="event_end_date" type="date" value="{{ (competition.event_end_date if competition and competition.event_end_date else '') }}"></div>
+        <div><label>PDF File</label><input name="schedule_pdf" type="file" accept="application/pdf" required></div>
+      </div>
+      <input type="hidden" name="medal_system_name" value="{{ medal_system_name|e }}">
+      <textarea name="medal_options_json" hidden>{{ medal_options_json }}</textarea>
+      <textarea name="special_awards_json" hidden>{{ special_awards_json }}</textarea>
+      <textarea name="competition_notes" hidden>{{ competition_notes }}</textarea>
+      <div class="actions" style="margin-top:10px">
+        <button type="submit">Parse PDF Into Draft Rows</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>{% if mode == 'edit' %}Edit Competition{% else %}Create Competition{% endif %}</h2>
+    <p class="small">Rows and session labels are JSON for now so review can be explicit and safe before publish.</p>
+
+    <form method="post" action="{% if mode == 'edit' %}/admin/competitions/{{ competition.id }}/edit{% else %}/admin/competitions{% endif %}">
+      <div class="row3">
+        <div><label>Name</label><input name="name" required value="{{ (competition.name if competition and competition.name else '') }}"></div>
+        <div><label>Location</label><input name="location" value="{{ (competition.location if competition and competition.location else '') }}"></div>
+        <div><label>Slug (optional)</label><input name="slug" value="{{ (competition.slug if competition and competition.slug else '') }}"></div>
+      </div>
+      <div class="row3" style="margin-top:10px">
+        <div><label>Start Date</label><input name="event_start_date" type="date" required value="{{ (competition.event_start_date if competition and competition.event_start_date else '') }}"></div>
+        <div><label>End Date</label><input name="event_end_date" type="date" value="{{ (competition.event_end_date if competition and competition.event_end_date else '') }}"></div>
+        <div>
+          <label>Awards PIN {% if mode == 'create' %}(required){% else %}(leave blank to keep current){% endif %}</label>
+          <input name="awards_pin" type="text" {% if mode == 'create' %}required{% endif %}>
+        </div>
+      </div>
+
+      <div class="row4" style="margin-top:12px">
+        <div>
+          <label>Medal System</label>
+          <select name="medal_system_name">
+            {% for key, options in medal_presets.items() %}
+            <option value="{{ key }}" {% if medal_system_name == key %}selected{% endif %}>
+              {{ key|capitalize }}{% if options %} ({{ options|length }} medals){% else %} (custom){% endif %}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div style="grid-column: span 3;">
+          <label>Competition Notes</label>
+          <textarea class="notes" name="competition_notes" placeholder="General notes for this event">{{ competition_notes }}</textarea>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label>Session Labels JSON</label>
+          <textarea name="session_labels_json">{{ session_labels_json }}</textarea>
+        </div>
+        <div>
+          <label>Schedule Rows JSON</label>
+          <textarea name="rows_json">{{ rows_json }}</textarea>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:12px">
+        <div>
+          <label>Medal Options JSON (array of strings)</label>
+          <textarea class="short" name="medal_options_json">{{ medal_options_json }}</textarea>
+        </div>
+        <div>
+          <label>Special Awards JSON (Top Overall, etc.)</label>
+          <textarea class="short" name="special_awards_json">{{ special_awards_json }}</textarea>
+        </div>
+      </div>
+
+      <div class="actions" style="margin-top:12px">
+        <button type="submit" name="intent" value="save_draft">Save Draft</button>
+        <button class="primary" type="submit" name="intent" value="publish">Save and Publish</button>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>

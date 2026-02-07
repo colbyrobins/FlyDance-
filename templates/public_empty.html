@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DanceComp</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 24px; color: #222; }
+  .card { max-width: 760px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; }
+  a { color: #6a1b9a; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>No Published Competitions Yet</h1>
+    <p>Use the admin area to import a schedule PDF, review, and publish a competition.</p>
+    {% if is_admin %}
+    <p><a href="/admin">Open Admin Dashboard</a></p>
+    {% else %}
+    <p><a href="/admin/login">Admin Login</a></p>
+    {% endif %}
+  </div>
+</body>
+</html>
