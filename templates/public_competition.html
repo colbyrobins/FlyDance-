@@ -25,9 +25,18 @@ h1{margin:0;text-align:center;color:var(--accent);font-size:1.45rem}
 .panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:10px}
 #specialAwardsList{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:6px}
 #specialAwardsList li{border:1px solid #ece2f7;border-radius:8px;padding:8px;background:#fbf8ff}
-.controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;justify-content:center}
-.controls input,.controls select,.controls button{padding:8px;border:1px solid var(--line);border-radius:6px;background:#fff}
-.controls input{width:320px;max-width:100%}
+.controls{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;justify-content:center}
+.controls input,.controls select,.controls button{
+  height:34px;
+  padding:5px 10px;
+  border:1px solid #d9d2e4;
+  border-radius:5px;
+  background:#fff;
+  font-size:.8rem;
+  line-height:1.2;
+}
+.controls button{cursor:pointer}
+.controls input{width:280px;max-width:100%}
 .wrap{overflow:auto;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 table{width:100%;border-collapse:collapse;background:#fff;min-width:1080px;font-size:.85rem}
 th{background:var(--accent);color:#fff;padding:9px 7px;text-align:left;font-size:.8rem;position:sticky;top:0}
@@ -38,23 +47,31 @@ tr.brk td{background:#f0e6f6;color:var(--accent);font-style:italic;font-weight:6
 .award-select,.entry-note-input{width:100%;padding:6px;border:1px solid #d6cde4;border-radius:6px;background:#fff;font-size:.82rem}
 .entry-note-input{min-width:200px}
 .award-select:disabled,.entry-note-input:disabled{background:#f1f1f1;color:#888}
+.favorite-btn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:1px solid #d6cde4;border-radius:999px;background:#fff;color:#8a6a00;font-size:1.05rem;line-height:1;cursor:pointer}
+.favorite-btn.on{background:#fff5db;border-color:#f2dd97;color:#7b5900}
+.favorite-btn:focus-visible{outline:2px solid #6a1b9a;outline-offset:2px}
+.favorite-cell{text-align:center;width:54px}
 .count{text-align:center;color:var(--muted);font-size:.83rem;padding:10px 0 20px}
+@media(min-width:761px){
 body.compact-mode table th:nth-child(1),
 body.compact-mode table th:nth-child(4),
 body.compact-mode table th:nth-child(5),
 body.compact-mode table th:nth-child(6),
 body.compact-mode table th:nth-child(7),
 body.compact-mode table th:nth-child(10),
-body.compact-mode table th:nth-child(11),
 body.compact-mode table th:nth-child(12),
+body.compact-mode table th:nth-child(13),
 body.compact-mode table tr.row td:nth-child(1),
 body.compact-mode table tr.row td:nth-child(4),
 body.compact-mode table tr.row td:nth-child(5),
 body.compact-mode table tr.row td:nth-child(6),
 body.compact-mode table tr.row td:nth-child(7),
 body.compact-mode table tr.row td:nth-child(10),
-body.compact-mode table tr.row td:nth-child(11),
-body.compact-mode table tr.row td:nth-child(12){display:none}
+body.compact-mode table tr.row td:nth-child(12),
+body.compact-mode table tr.row td:nth-child(13){display:none}
+body.compact-mode table tr.row{cursor:pointer}
+body.compact-mode table tr.row.open td{display:table-cell!important}
+}
 .modal-bg{position:fixed;inset:0;background:rgba(28,18,37,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
 .modal{width:min(480px,100%);background:#fff;border:1px solid #dacde9;border-radius:12px;padding:12px}
 .mhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
@@ -64,19 +81,29 @@ body.compact-mode table tr.row td:nth-child(12){display:none}
 .mact{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
 .mact button{padding:8px 12px;border:1px solid #bfb5cc;border-radius:8px;background:#fff;cursor:pointer}
 .mact .primary{background:var(--accent);border-color:var(--accent);color:#fff}
-@media(max-width:980px){.side{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);transition:.2s;z-index:25}body.menu-open .side{transform:translateX(0)}.controls input,.controls select,.controls button{width:100%}}
+@media(max-width:980px){
+.side{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);transition:.2s;z-index:25}
+body.menu-open .side{transform:translateX(0)}
+.controls{justify-content:flex-start}
+.controls input{width:100%;flex:1 1 100%}
+.controls select{width:auto;max-width:100%;min-width:0;flex:1 1 180px}
+.controls button{width:auto;flex:0 0 auto}
+}
 @media(max-width:760px){
 table{min-width:0;border-collapse:separate;border-spacing:0 10px;background:transparent}
 thead{display:none}
 tbody tr{display:block;background:#fff;border:1px solid #ececec;border-radius:10px;padding:7px 9px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-tbody tr.row{cursor:pointer}
+tbody tr.row{cursor:pointer;position:relative}
 tbody tr td{display:grid;grid-template-columns:minmax(84px,38%) minmax(0,1fr);gap:8px;padding:6px 0;border-bottom:1px solid #f3f3f3;overflow-wrap:anywhere}
 tbody tr td:before{content:attr(data-label);font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase}
 tbody tr.row td{display:none}
-tbody tr.row td[data-label="Day"],tbody tr.row td[data-label="Time"],tbody tr.row td[data-label="Entry #"],tbody tr.row td[data-label="Dance Name"],tbody tr.row td[data-label="Dancers"],tbody tr.row td[data-label="Medal"],tbody tr.row td[data-label="Note"]{display:grid}
+tbody tr.row td[data-label="Day"],tbody tr.row td[data-label="Time"],tbody tr.row td[data-label="Entry #"],tbody tr.row td[data-label="Dance Name"],tbody tr.row td[data-label="Dancers"],tbody tr.row td[data-label="Favorite"],tbody tr.row td[data-label="Medal"],tbody tr.row td[data-label="Note"]{display:grid}
+tbody tr.row td[data-label="Favorite"]{display:block!important;position:absolute;top:6px;right:8px;padding:0;border-bottom:none;z-index:2}
+tbody tr.row td[data-label="Favorite"]:before{display:none}
 tbody tr.row:not(.open) td{border-bottom:none}
 tbody tr.row.open td{display:grid}
-body.compact-mode tbody tr.row td[data-label="Dancers"],body.compact-mode tbody tr.row td[data-label="Medal"],body.compact-mode tbody tr.row td[data-label="Note"]{display:none!important}
+body.compact-mode tbody tr.row:not(.open) td[data-label="Dancers"],body.compact-mode tbody tr.row:not(.open) td[data-label="Medal"],body.compact-mode tbody tr.row:not(.open) td[data-label="Note"]{display:none!important}
+body.compact-mode tbody tr.row.open td[data-label="Dancers"],body.compact-mode tbody tr.row.open td[data-label="Medal"],body.compact-mode tbody tr.row.open td[data-label="Note"]{display:grid!important}
 tbody tr.session,tbody tr.brk{border:none;padding:0;box-shadow:none}
 tbody tr.session td,tbody tr.brk td{display:block;border-bottom:none;padding:10px}
 }
@@ -111,22 +138,23 @@ tbody tr.session td,tbody tr.brk td{display:block;border-bottom:none;padding:10p
     <div class="controls">
       <input id="search" type="text" placeholder="Search dance or dancer">
       <select id="sessionFilter"><option value="">All Sessions</option></select>
+      <button id="favoritesToggle">Favorites: Off</button>
       <button id="compactToggle">Compact: Off</button>
       <button id="clearBtn">Clear</button>
     </div>
 
+    <p class="count" id="countInfo"></p>
     <div class="wrap">
       <table>
         <thead>
           <tr>
             <th>Session</th><th>Day</th><th>Time</th><th>Class</th><th>Age</th><th>Type</th><th>Style</th>
-            <th>Entry #</th><th>Dance Name</th><th>Dancers</th><th>Medal</th><th>Note</th>
+            <th>Entry #</th><th>Dance Name</th><th>Dancers</th><th aria-label="Favorite">&#9733;</th><th>Medal</th><th>Note</th>
           </tr>
         </thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
-    <p class="count" id="countInfo"></p>
 
     <div class="modal-bg" id="compNoteModal" hidden>
       <div class="modal" role="dialog" aria-modal="true">
@@ -153,12 +181,50 @@ const IS_ADMIN={{ "true" if is_admin else "false" }};
 const byId=(id)=>document.getElementById(id),tbody=byId("tbody"),searchInput=byId("search"),sessionFilter=byId("sessionFilter"),countInfo=byId("countInfo");
 let DATA=[],SESSION_LABELS={},medalOptions=[],specialAwards=[],competitionNotes="",awardsByEntry={},canEditAwards=IS_ADMIN;
 let compactMode=false;
+let favoritesOnly=false;
+let favorites=new Set();
 const noteTimers=new Map();
 
 function esc(v){const d=document.createElement("div");d.textContent=v==null?"":String(v);return d.innerHTML}
 function awardState(v){if(v&&typeof v==="object")return{medal:typeof v.medal==="string"?v.medal:"",entry_note:typeof v.entry_note==="string"?v.entry_note:""};if(typeof v==="string")return{medal:"",entry_note:v};return{medal:"",entry_note:""}}
 function getAward(n){return awardState(awardsByEntry[String(n)])}
 function setAward(n,v){awardsByEntry[String(n)]=awardState(v)}
+function favoritesKey(){return `dancecomp.favorites.${CURRENT_SLUG}`}
+function favoritesOnlyKey(){return `dancecomp.favoritesOnly.${CURRENT_SLUG}`}
+function isFavorited(n){return favorites.has(String(n))}
+function setFavoritesToggleLabel(){byId("favoritesToggle").textContent=favoritesOnly?"Favorites: On":"Favorites: Off"}
+function loadFavorites(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(favoritesKey())||"[]");
+    favorites=new Set(Array.isArray(raw)?raw.map((v)=>String(v)):[]);
+  }catch(_){
+    favorites=new Set();
+  }
+  try{
+    favoritesOnly=(localStorage.getItem(favoritesOnlyKey())||"0")==="1";
+  }catch(_){
+    favoritesOnly=false;
+  }
+  setFavoritesToggleLabel();
+}
+function saveFavorites(){
+  try{localStorage.setItem(favoritesKey(),JSON.stringify([...favorites]));}catch(_){}
+}
+function saveFavoritesOnly(){
+  try{localStorage.setItem(favoritesOnlyKey(),favoritesOnly?"1":"0");}catch(_){}
+}
+function toggleFavorite(n){
+  const k=String(n);
+  if(favorites.has(k))favorites.delete(k);
+  else favorites.add(k);
+  saveFavorites();
+}
+function toggleFavoritesOnly(){
+  favoritesOnly=!favoritesOnly;
+  setFavoritesToggleLabel();
+  saveFavoritesOnly();
+  render();
+}
 
 function setUnlockVisibility(){
   byId("unlockBtn").style.display=canEditAwards||IS_ADMIN?"none":"inline-block";
@@ -275,27 +341,33 @@ function medalOptionsHtml(selected){
 
 function render(){
   const q=searchInput.value.toLowerCase().trim(),sf=sessionFilter.value;
-  const cols=compactMode?4:12;
+  const hasFilter=!!q||!!sf||favoritesOnly;
+  const cols=compactMode?5:13;
   let html="",last=0,shown=0;
   for(const r of DATA){
     if(sf&&String(r.s)!==sf)continue;
     const isBreak=!!r.brk,isEntry=r.e!==undefined&&r.e!==null&&r.e!=="";
-    if(q&&isEntry){
-      const m1=(r.name||"").toLowerCase().includes(q),m2=(r.d||"").toLowerCase().includes(q);
-      if(!m1&&!m2)continue;
-    }
-    if(q&&isBreak)continue;
-    if(r.s!==last){
-      last=r.s;
-      html+=`<tr class="session"><td colspan="${cols}">${esc(SESSION_LABELS[String(r.s)]||`Session ${r.s}`)}</td></tr>`;
-    }
     if(isBreak){
+      if(q||favoritesOnly)continue;
+      if(r.s!==last){
+        last=r.s;
+        html+=`<tr class="session"><td colspan="${cols}">${esc(SESSION_LABELS[String(r.s)]||`Session ${r.s}`)}</td></tr>`;
+      }
       html+=`<tr class="brk"><td colspan="${cols}">${esc(r.brk)}</td></tr>`;
       continue;
     }
     if(!isEntry)continue;
+    if(q){
+      const m1=(r.name||"").toLowerCase().includes(q),m2=(r.d||"").toLowerCase().includes(q);
+      if(!m1&&!m2)continue;
+    }
+    if(favoritesOnly&&!isFavorited(r.e))continue;
+    if(r.s!==last){
+      last=r.s;
+      html+=`<tr class="session"><td colspan="${cols}">${esc(SESSION_LABELS[String(r.s)]||`Session ${r.s}`)}</td></tr>`;
+    }
     shown++;
-    const a=getAward(r.e);
+    const a=getAward(r.e),fav=isFavorited(r.e);
     html+=`<tr class="row" tabindex="0" aria-expanded="false" title="Tap to show details">
       <td data-label="Session">${r.s}</td>
       <td data-label="Day">${esc(r.day||"")}</td>
@@ -307,31 +379,41 @@ function render(){
       <td data-label="Entry #" class="entry">${esc(String(r.e))}</td>
       <td data-label="Dance Name">${esc(r.name||"")}</td>
       <td data-label="Dancers">${esc(r.d||"")}</td>
+      <td data-label="Favorite" class="favorite-cell"><button type="button" class="favorite-btn ${fav?"on":""}" data-entry="${esc(String(r.e))}" aria-pressed="${fav?"true":"false"}" aria-label="${fav?"Remove favorite":"Add favorite"}" title="${fav?"Remove favorite":"Add favorite"}">${fav?"&#9733;":"&#9734;"}</button></td>
       <td data-label="Medal"><select class="award-select medal-select" data-entry="${esc(String(r.e))}" ${canEditAwards?"":"disabled"}>${medalOptionsHtml(a.medal||"")}</select></td>
       <td data-label="Note"><input class="entry-note-input note-input" data-entry="${esc(String(r.e))}" value="${esc(a.entry_note||"")}" placeholder="Add note" ${canEditAwards?"":"disabled"}></td>
     </tr>`;
   }
   tbody.innerHTML=html;
   const total=DATA.filter((r)=>r.e!==undefined&&r.e!==null&&r.e!=="").length;
-  countInfo.textContent=`Showing ${shown} of ${total} entries`;
+  countInfo.textContent=hasFilter?`${shown}/${total} dances`:`${total} dances`;
 }
 
 function isMobile(){return window.matchMedia("(max-width:760px)").matches}
+function canToggleRow(){return isMobile()||compactMode}
 function toggleRow(row){const open=row.classList.toggle("open");row.setAttribute("aria-expanded",open?"true":"false")}
 
 tbody.addEventListener("click",(e)=>{
   const row=e.target.closest("tr.row");
-  if(!row||!isMobile())return;
+  if(!row||!canToggleRow())return;
   if(e.target.closest("input,select,textarea,button,a,label"))return;
   toggleRow(row);
 });
 tbody.addEventListener("keydown",(e)=>{
   if(e.key!=="Enter"&&e.key!==" ")return;
   const row=e.target.closest("tr.row");
-  if(!row||!isMobile())return;
+  if(!row||!canToggleRow())return;
   if(e.target.closest("input,select,textarea,button,a,label"))return;
   e.preventDefault();
   toggleRow(row);
+});
+tbody.addEventListener("click",(e)=>{
+  const btn=e.target.closest(".favorite-btn");
+  if(!btn)return;
+  const entry=btn.dataset.entry;
+  if(entry===undefined||entry===null||entry==="")return;
+  toggleFavorite(entry);
+  render();
 });
 
 tbody.addEventListener("change",async(e)=>{
@@ -368,8 +450,16 @@ tbody.addEventListener("blur",async(e)=>{
 
 searchInput.addEventListener("input",render);
 sessionFilter.addEventListener("change",render);
+byId("favoritesToggle").addEventListener("click",toggleFavoritesOnly);
 byId("compactToggle").addEventListener("click",toggleCompactMode);
-byId("clearBtn").addEventListener("click",()=>{searchInput.value="";sessionFilter.value="";render();});
+byId("clearBtn").addEventListener("click",()=>{
+  searchInput.value="";
+  sessionFilter.value="";
+  favoritesOnly=false;
+  setFavoritesToggleLabel();
+  saveFavoritesOnly();
+  render();
+});
 
 byId("unlockBtn").addEventListener("click",async()=>{
   const pin=window.prompt("Enter competition PIN to edit awards:");
@@ -445,6 +535,7 @@ document.addEventListener("click",(e)=>{if(!isMobile())return;const inside=e.tar
 (async function boot(){
   try{
     try{compactMode=(localStorage.getItem("dancecomp.compactMode")||"0")==="1";}catch(_){compactMode=false;}
+    loadFavorites();
     applyCompactMode();
     await Promise.all([loadCompetitionList(),loadSchedule(),loadAwards()]);
     render();
