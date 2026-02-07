@@ -39,6 +39,22 @@ tr.brk td{background:#f0e6f6;color:var(--accent);font-style:italic;font-weight:6
 .entry-note-input{min-width:200px}
 .award-select:disabled,.entry-note-input:disabled{background:#f1f1f1;color:#888}
 .count{text-align:center;color:var(--muted);font-size:.83rem;padding:10px 0 20px}
+body.compact-mode table th:nth-child(1),
+body.compact-mode table th:nth-child(4),
+body.compact-mode table th:nth-child(5),
+body.compact-mode table th:nth-child(6),
+body.compact-mode table th:nth-child(7),
+body.compact-mode table th:nth-child(10),
+body.compact-mode table th:nth-child(11),
+body.compact-mode table th:nth-child(12),
+body.compact-mode table tr.row td:nth-child(1),
+body.compact-mode table tr.row td:nth-child(4),
+body.compact-mode table tr.row td:nth-child(5),
+body.compact-mode table tr.row td:nth-child(6),
+body.compact-mode table tr.row td:nth-child(7),
+body.compact-mode table tr.row td:nth-child(10),
+body.compact-mode table tr.row td:nth-child(11),
+body.compact-mode table tr.row td:nth-child(12){display:none}
 .modal-bg{position:fixed;inset:0;background:rgba(28,18,37,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
 .modal{width:min(480px,100%);background:#fff;border:1px solid #dacde9;border-radius:12px;padding:12px}
 .mhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
@@ -60,6 +76,7 @@ tbody tr.row td{display:none}
 tbody tr.row td[data-label="Day"],tbody tr.row td[data-label="Time"],tbody tr.row td[data-label="Entry #"],tbody tr.row td[data-label="Dance Name"],tbody tr.row td[data-label="Dancers"],tbody tr.row td[data-label="Medal"],tbody tr.row td[data-label="Note"]{display:grid}
 tbody tr.row:not(.open) td{border-bottom:none}
 tbody tr.row.open td{display:grid}
+body.compact-mode tbody tr.row td[data-label="Dancers"],body.compact-mode tbody tr.row td[data-label="Medal"],body.compact-mode tbody tr.row td[data-label="Note"]{display:none!important}
 tbody tr.session,tbody tr.brk{border:none;padding:0;box-shadow:none}
 tbody tr.session td,tbody tr.brk td{display:block;border-bottom:none;padding:10px}
 }
@@ -94,6 +111,7 @@ tbody tr.session td,tbody tr.brk td{display:block;border-bottom:none;padding:10p
     <div class="controls">
       <input id="search" type="text" placeholder="Search dance or dancer">
       <select id="sessionFilter"><option value="">All Sessions</option></select>
+      <button id="compactToggle">Compact: Off</button>
       <button id="clearBtn">Clear</button>
     </div>
 
@@ -134,6 +152,7 @@ const CURRENT_SLUG={{ competition.slug|tojson }};
 const IS_ADMIN={{ "true" if is_admin else "false" }};
 const byId=(id)=>document.getElementById(id),tbody=byId("tbody"),searchInput=byId("search"),sessionFilter=byId("sessionFilter"),countInfo=byId("countInfo");
 let DATA=[],SESSION_LABELS={},medalOptions=[],specialAwards=[],competitionNotes="",awardsByEntry={},canEditAwards=IS_ADMIN;
+let compactMode=false;
 const noteTimers=new Map();
 
 function esc(v){const d=document.createElement("div");d.textContent=v==null?"":String(v);return d.innerHTML}
@@ -144,6 +163,16 @@ function setAward(n,v){awardsByEntry[String(n)]=awardState(v)}
 function setUnlockVisibility(){
   byId("unlockBtn").style.display=canEditAwards||IS_ADMIN?"none":"inline-block";
   byId("medalListBtn").hidden=!canEditAwards;
+}
+function applyCompactMode(){
+  document.body.classList.toggle("compact-mode",compactMode);
+  byId("compactToggle").textContent=compactMode?"Compact: On":"Compact: Off";
+}
+function toggleCompactMode(){
+  compactMode=!compactMode;
+  try{localStorage.setItem("dancecomp.compactMode",compactMode?"1":"0");}catch(_){}
+  applyCompactMode();
+  render();
 }
 function updateCompNotesPreview(){
   const t=(competitionNotes||"").trim();
@@ -246,6 +275,7 @@ function medalOptionsHtml(selected){
 
 function render(){
   const q=searchInput.value.toLowerCase().trim(),sf=sessionFilter.value;
+  const cols=compactMode?4:12;
   let html="",last=0,shown=0;
   for(const r of DATA){
     if(sf&&String(r.s)!==sf)continue;
@@ -257,10 +287,10 @@ function render(){
     if(q&&isBreak)continue;
     if(r.s!==last){
       last=r.s;
-      html+=`<tr class="session"><td colspan="12">${esc(SESSION_LABELS[String(r.s)]||`Session ${r.s}`)}</td></tr>`;
+      html+=`<tr class="session"><td colspan="${cols}">${esc(SESSION_LABELS[String(r.s)]||`Session ${r.s}`)}</td></tr>`;
     }
     if(isBreak){
-      html+=`<tr class="brk"><td colspan="12">${esc(r.brk)}</td></tr>`;
+      html+=`<tr class="brk"><td colspan="${cols}">${esc(r.brk)}</td></tr>`;
       continue;
     }
     if(!isEntry)continue;
@@ -338,6 +368,7 @@ tbody.addEventListener("blur",async(e)=>{
 
 searchInput.addEventListener("input",render);
 sessionFilter.addEventListener("change",render);
+byId("compactToggle").addEventListener("click",toggleCompactMode);
 byId("clearBtn").addEventListener("click",()=>{searchInput.value="";sessionFilter.value="";render();});
 
 byId("unlockBtn").addEventListener("click",async()=>{
@@ -413,6 +444,8 @@ document.addEventListener("click",(e)=>{if(!isMobile())return;const inside=e.tar
 
 (async function boot(){
   try{
+    try{compactMode=(localStorage.getItem("dancecomp.compactMode")||"0")==="1";}catch(_){compactMode=false;}
+    applyCompactMode();
     await Promise.all([loadCompetitionList(),loadSchedule(),loadAwards()]);
     render();
   }catch(err){
