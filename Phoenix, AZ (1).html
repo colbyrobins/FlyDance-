@@ -1,0 +1,556 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phoenix, AZ - Dance Competition Schedule</title>
+<style>
+  :root {
+    --bg: #f5f5f7;
+    --card: #fff;
+    --border: #ddd;
+    --accent: #6a1b9a;
+    --accent-light: #e1bee7;
+    --text: #222;
+    --muted: #666;
+    --break-bg: #f0e6f6;
+    --session-bg: #6a1b9a;
+    --session-text: #fff;
+    --input-bg: #fafafa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 12px;
+    max-width: 100%;
+  }
+  h1 {
+    text-align: center;
+    color: var(--accent);
+    margin-bottom: 4px;
+    font-size: 1.5rem;
+  }
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+    align-items: center;
+    justify-content: center;
+  }
+  .controls input[type="text"] {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    width: 320px;
+    max-width: 100%;
+  }
+  .controls select {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background: var(--card);
+  }
+  .controls button {
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card);
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .controls select,
+  .controls button {
+    min-height: 38px;
+  }
+  .controls button:hover { background: #eee; }
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    font-size: 0.85rem;
+    min-width: 1000px;
+  }
+  thead th {
+    background: var(--accent);
+    color: var(--session-text);
+    padding: 10px 8px;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  tbody td {
+    padding: 7px 8px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+  }
+  tbody tr:hover { background: #f9f5fc; }
+  tbody tr.session-header td {
+    background: var(--session-bg);
+    color: var(--session-text);
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 10px 12px;
+    border-bottom: none;
+  }
+  tbody tr.break-row td {
+    background: var(--break-bg);
+    color: var(--accent);
+    font-weight: 600;
+    font-style: italic;
+    padding: 5px 12px;
+    font-size: 0.82rem;
+  }
+  .dancers-cell {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .entry-num { font-weight: 700; color: var(--accent); }
+  .dance-name { font-weight: 600; }
+  .awards-input {
+    width: 100%;
+    min-width: 120px;
+    padding: 4px 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.82rem;
+    background: var(--input-bg);
+    font-family: inherit;
+  }
+  .awards-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-light);
+  }
+  .count-info {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin-top: 8px;
+    padding-bottom: 20px;
+  }
+  @media (max-width: 900px) {
+    h1 { font-size: 1.2rem; }
+    .controls {
+      justify-content: stretch;
+    }
+    .controls input[type="text"],
+    .controls select,
+    .controls button {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+  @media (max-width: 760px) {
+    body {
+      padding: 10px;
+    }
+    .subtitle {
+      margin-bottom: 12px;
+    }
+    .controls {
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .controls input[type="text"],
+    .controls select,
+    .controls button {
+      min-height: 44px;
+      font-size: 0.95rem;
+    }
+    .table-wrap {
+      overflow: visible;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    table {
+      min-width: 0;
+      border-collapse: separate;
+      border-spacing: 0 10px;
+      background: transparent;
+      font-size: 0.86rem;
+    }
+    thead {
+      display: none;
+    }
+    tbody tr {
+      display: block;
+      background: var(--card);
+      border: 1px solid #ececec;
+      border-radius: 10px;
+      padding: 8px 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    tbody tr.entry-row {
+      cursor: pointer;
+    }
+    tbody tr.entry-row:not(.is-expanded) {
+      padding: 6px 10px;
+    }
+    tbody tr.entry-row:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    tbody tr:hover {
+      background: var(--card);
+    }
+    tbody tr td {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px solid #f3f3f3;
+      text-align: right;
+    }
+    tbody tr td:last-child {
+      border-bottom: none;
+    }
+    tbody tr td::before {
+      content: attr(data-label);
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+      text-align: left;
+      flex: 0 0 42%;
+    }
+    tbody tr.entry-row td {
+      display: none;
+    }
+    tbody tr.entry-row td[data-label="Day"],
+    tbody tr.entry-row td[data-label="Time"],
+    tbody tr.entry-row td[data-label="Dance Name"] {
+      display: flex;
+    }
+    tbody tr.entry-row td[data-label="Dance Name"] {
+      font-weight: 700;
+      color: var(--accent);
+    }
+    tbody tr.entry-row:not(.is-expanded) td {
+      border-bottom: none;
+    }
+    tbody tr.entry-row:not(.is-expanded) td[data-label="Day"],
+    tbody tr.entry-row:not(.is-expanded) td[data-label="Time"] {
+      border-bottom: 1px solid #f3f3f3;
+    }
+    tbody tr.entry-row.is-expanded td {
+      display: flex;
+    }
+    tbody tr.entry-row.is-expanded td[data-label="Dance Name"] {
+      color: var(--text);
+    }
+    tbody tr.session-header,
+    tbody tr.break-row {
+      border: none;
+      padding: 0;
+      box-shadow: none;
+      margin-bottom: 8px;
+    }
+    tbody tr.session-header td,
+    tbody tr.break-row td {
+      display: block;
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: none;
+    }
+    tbody tr.session-header td::before,
+    tbody tr.break-row td::before {
+      content: none;
+    }
+    .dancers-cell {
+      font-size: 0.8rem;
+      line-height: 1.35;
+    }
+    .awards-input {
+      width: 58%;
+      min-width: 0;
+      font-size: 0.9rem;
+    }
+    .count-info {
+      font-size: 0.78rem;
+      padding-bottom: 12px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Phoenix, AZ Dance Competition</h1>
+<p class="subtitle">Feb 7-8, 2026 - Full Schedule</p>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="Search by dance name or dancer...">
+  <select id="sessionFilter">
+    <option value="">All Sessions</option>
+    <option value="1">Session 1 - Sat AM</option>
+    <option value="2">Session 2 - Sat PM</option>
+    <option value="3">Session 3 - Sat Eve</option>
+    <option value="4">Session 4 - Sun AM</option>
+    <option value="5">Session 5 - Sun PM</option>
+    <option value="6">Session 6 - Sun Eve</option>
+  </select>
+  <button id="clearBtn" title="Clear search and filters">Clear</button>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Session</th>
+        <th>Day</th>
+        <th>Time</th>
+        <th>Class</th>
+        <th>Age Division</th>
+        <th>Type</th>
+        <th>Style</th>
+        <th>Entry #</th>
+        <th>Dance Name</th>
+        <th>Dancers</th>
+        <th>Awards</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<p class="count-info" id="countInfo"></p>
+
+<script>
+const DATA = [
+  // SESSION 1 - Saturday, Feb 7
+  {s:1,day:"Sat",t:"8:09 AM",cls:"First Time Flyer",age:"Mini 6 And Under",type:"Small Group",style:"Hip Hop",e:4,name:"MR. WORLDWIDE",d:"Zara Hartman, Emsley Kahn, Remi Peppe, Mila Stefanik, Emery Taylor"},
+  {s:1,day:"Sat",t:"8:47 AM",cls:"Business Class",age:"Junior: 9-11",type:"Large Group",style:"Lyrical",e:17,name:"THERE FOR YOU",d:"Kamryn Chandler, Aubrey Dysinger, Blayke Finuf, Auriella LaVetter, Penelope Liffiton, Jadyn Robins, Kenzie Robins, Sofia Salazar, Adelaide Sapyta, Olivia Thrush, Harper Warman, Kinsley Woodard"},
+  {s:1,brk:"9:20 AM - JUDGES BREAK"},
+  {s:1,day:"Sat",t:"9:25 AM",cls:"Business Class",age:"Junior: 9-11",type:"Small Group",style:"Jazz",e:28,name:"AMERICANO",d:"Aubrey Dysinger, Blayke Finuf, Londyn Godoy, Jadyn Robins, Kenzie Robins, Olivia Thrush, Kinsley Woodard"},
+  {s:1,day:"Sat",t:"9:46 AM",cls:"Business Class",age:"Junior: 9-11",type:"Small Group",style:"Hip Hop",e:35,name:"DIALED IN",d:"Aubrey Dysinger, Blayke Finuf, Londyn Godoy, Tyson Krauss, Jadyn Robins, Kenzie Robins, Olivia Thrush, Kinsley Woodard"},
+  {s:1,day:"Sat",t:"10:02 AM",cls:"First Time Flyer",age:"Mini 6 And Under",type:"Small Group",style:"Jazz",e:40,name:"THESE BOOTS",d:"Zara Hartman, Emsley Kahn, Remi Peppe, Mila Stefanik, Emery Taylor"},
+  {s:1,day:"Sat",t:"10:05 AM",cls:"Business Class",age:"Junior: 9-11",type:"Small Group",style:"Contemporary",e:41,name:"MUDDY WATERS",d:"Blayke Finuf, Londyn Godoy, Jadyn Robins, Kinsley Woodard"},
+  {s:1,day:"Sat",t:"10:23 AM",cls:"Business Class",age:"Petite: 7-8",type:"Small Group",style:"Jazz",e:47,name:"HOT WINGS",d:"Scarlett Celaya, Madelynn Mancini, Abby Nicholson, Hailey Nicholson, Adelaide Sapyta, Brooke Ziegler"},
+  {s:1,day:"Sat",t:"10:40 AM",cls:"Business Class",age:"Junior: 9-11",type:"Small Group",style:"Lyrical",e:53,name:"ALWAYS FOREVER",d:"Aubrey Dysinger, Blayke Finuf, Jadyn Robins, Kenzie Robins, Olivia Thrush, Kinsley Woodard"},
+  {s:1,brk:"10:56 AM - JUDGES BREAK"},
+  {s:1,day:"Sat",t:"11:07 AM",cls:"Business Class",age:"Junior: 9-11",type:"Large Group",style:"Jazz",e:60,name:"STILL ROCK N ROLL",d:"Kamryn Chandler, Tyson Krauss, Auriella LaVetter, Penelope Liffiton, Abby Nicholson, Hailey Nicholson, Sofia Salazar, Adelaide Sapyta, Olivia Thrush, Harper Warman"},
+  {s:1,day:"Sat",t:"11:19 AM",cls:"First Time Flyer",age:"Mini 6 And Under",type:"Small Group",style:"Lyrical",e:64,name:"GIRLS",d:"Zara Hartman, Emsley Kahn, Remi Peppe, Mila Stefanik, Emery Taylor"},
+  {s:1,day:"Sat",t:"11:26 AM",cls:"Business Class",age:"Petite: 7-8",type:"Large Group",style:"Hip Hop",e:66,name:"MAGIC",d:"Scarlett Celaya, Kamryn Chandler, Auriella LaVetter, Penelope Liffiton, Madelynn Mancini, Abby Nicholson, Hailey Nicholson, Sofia Salazar, Adelaide Sapyta, Harper Warman, Brooke Ziegler"},
+  {s:1,day:"Sat",t:"11:54 AM",cls:"Business Class",age:"Junior: 9-11",type:"Large Group",style:"Musical Theatre",e:75,name:"SEIZE THE DAY",d:"Kamryn Chandler, Tyson Krauss, Auriella LaVetter, Penelope Liffiton, Abby Nicholson, Hailey Nicholson, Jadyn Robins, Kenzie Robins, Sofia Salazar, Adelaide Sapyta, Olivia Thrush, Harper Warman"},
+  {s:1,day:"Sat",t:"12:10 PM",cls:"Business Class",age:"Junior: 9-11",type:"Large Group",style:"Musical Theatre",e:81,name:"WONKA",d:"Kamryn Chandler, Blayke Finuf, Auriella LaVetter, Penelope Liffiton, Abby Nicholson, Hailey Nicholson, Jadyn Robins, Kenzie Robins, Sofia Salazar, Olivia Thrush, Harper Warman, Kinsley Woodard"},
+  {s:1,brk:"12:27 PM - JUDGES BREAK"},
+  {s:1,brk:"12:35 PM - IMPROV. COMPETITION (Mini, Petite & Junior)"},
+  {s:1,brk:"12:50 PM - AWARDS: SESSION 1"},
+  {s:1,brk:"1:35 PM - LUNCH BREAK"},
+
+  // SESSION 2 - Saturday, Feb 7
+  {s:2,day:"Sat",t:"2:14 PM",cls:"First Class",age:"Teen: 12-14",type:"Large Group",style:"Contemporary",e:90,name:"HEAVEN IS HERE",d:"Elona Banales, Hailey Brunsvold, Aiden Hackathorn, Yamilett Lopez-Gutierrez, Mercedes Martinez, Daniela Padilla, Ella Sieminski, Lilianna Sotomayor, Hannah Struthers, Kennedy Woodard, Madi Young"},
+  {s:2,day:"Sat",t:"3:22 PM",cls:"First Class",age:"Teen: 12-14",type:"Large Group",style:"Hip Hop",e:111,name:"GREEDY",d:"Elona Banales, Hailey Brunsvold, Aiden Hackathorn, Alana Pope, Ella Sieminski, Lilianna Sotomayor, Hannah Struthers, Allison Swaim, Kennedy Woodard, Madi Young"},
+  {s:2,brk:"3:33 PM - JUDGES BREAK"},
+  {s:2,day:"Sat",t:"4:17 PM",cls:"First Class",age:"Teen: 12-14",type:"Small Group",style:"Hip Hop",e:126,name:"THE BADDEST",d:"Elona Banales, Aiden Hackathorn, Yamilett Lopez-Gutierrez, Mercedes Martinez, Daniela Padilla, Hannah Struthers, Tatum Van Derlaske, Kennedy Woodard, Madi Young"},
+  {s:2,day:"Sat",t:"4:48 PM",cls:"First Class",age:"Teen: 12-14",type:"Small Group",style:"Lyrical",e:136,name:"CRY ME A RIVER",d:"Elona Banales, Londyn Godoy, Aiden Hackathorn, Alana Pope, Ella Sieminski, Lilianna Sotomayor, Hannah Struthers, Kennedy Woodard, Madi Young"},
+  {s:2,brk:"5:07 PM - JUDGES BREAK"},
+  {s:2,day:"Sat",t:"5:15 PM",cls:"First Class",age:"Teen: 12-14",type:"Small Group",style:"Tap",e:143,name:"ABC",d:"Elona Banales, Tyson Krauss, Alana Pope, Ella Sieminski, Tatum Van Derlaske"},
+  {s:2,day:"Sat",t:"5:35 PM",cls:"First Class",age:"Teen: 12-14",type:"Small Group",style:"Lyrical",e:149,name:"DON'T SPEAK",d:"Elona Banales, Hailey Brunsvold, Aiden Hackathorn, Yamilett Lopez-Gutierrez, Mercedes Martinez, Daniela Padilla, Ella Sieminski, Kennedy Woodard, Madi Young"},
+  {s:2,day:"Sat",t:"6:02 PM",cls:"First Class",age:"Senior: 15-18",type:"Duet/Trio",style:"Open",e:158,name:"BEGGIN'",d:"Yamilett Lopez-Gutierrez, Mercedes Martinez, Daniela Padilla"},
+  {s:2,day:"Sat",t:"6:21 PM",cls:"First Class",age:"Teen: 12-14",type:"Large Group",style:"Lyrical",e:164,name:"SAVE YOUR SOUL",d:"Elona Banales, Hailey Brunsvold, Londyn Godoy, Aiden Hackathorn, Yamilett Lopez-Gutierrez, Mercedes Martinez, Daniela Padilla, Alana Pope, Ella Sieminski, Lilianna Sotomayor, Hannah Struthers, Kennedy Woodard, Madi Young"},
+  {s:2,brk:"6:42 PM - JUDGES BREAK"},
+  {s:2,brk:"6:50 PM - IMPROV. COMPETITION (Teen & Seniors)"},
+  {s:2,brk:"7:05 PM - AWARDS: SESSION 2"},
+  {s:2,brk:"7:50 PM - DINNER BREAK"},
+
+  // SESSION 3 - Saturday, Feb 7
+  {s:3,day:"Sat",t:"9:23 PM",cls:"First Class",age:"Teen: 12-14",type:"Duet/Trio",style:"Contemporary",e:192,name:"WAY DOWN WE GO",d:"Elona Banales, Ella Sieminski, Madi Young"},
+  {s:3,brk:"9:29 PM - JUDGES BREAK"},
+  {s:3,brk:"9:40 PM - AWARDS: SESSION 3"},
+
+  // SESSION 4 - Sunday, Feb 8
+  {s:4,day:"Sun",t:"9:14 AM",cls:"Business Class",age:"Junior: 9-11",type:"Solo",style:"Contemporary",e:222,name:"PAINT IT BLACK",d:"Kenzie Robins"},
+  {s:4,day:"Sun",t:"9:17 AM",cls:"Business Class",age:"Junior: 9-11",type:"Solo",style:"Hip Hop",e:223,name:"FLY AS ME",d:"Tyson Krauss"},
+  {s:4,day:"Sun",t:"9:26 AM",cls:"Business Class",age:"Junior: 9-11",type:"Solo",style:"Hip Hop",e:226,name:"BOSS",d:"Olivia Thrush"},
+  {s:4,day:"Sun",t:"9:37 AM",cls:"Business Class",age:"Junior: 9-11",type:"Solo",style:"Jazz",e:230,name:"FAME",d:"Jadyn Robins"},
+  {s:4,day:"Sun",t:"9:39 AM",cls:"Business Class",age:"Junior: 9-11",type:"Solo",style:"Jazz",e:231,name:"LEVEL UP",d:"Blayke Finuf"},
+  {s:4,day:"Sun",t:"9:42 AM",cls:"Business Class",age:"Junior: 9-11",type:"Solo",style:"Jazz",e:232,name:"TOO MUCH",d:"Penelope Liffiton"},
+  {s:4,brk:"9:53 AM - JUDGES BREAK"},
+  {s:4,day:"Sun",t:"10:01 AM",cls:"Business Class",age:"Junior: 9-11",type:"Solo",style:"Lyrical",e:237,name:"SOMEWHERE ONLY WE KNOW",d:"Auriella LaVetter"},
+  {s:4,day:"Sun",t:"10:07 AM",cls:"Business Class",age:"Junior: 9-11",type:"Solo",style:"Lyrical",e:239,name:"IN THE STARS",d:"Sofia Salazar"},
+  {s:4,day:"Sun",t:"10:10 AM",cls:"Business Class",age:"Junior: 9-11",type:"Solo",style:"Lyrical",e:240,name:"IRIS",d:"Kinsley Woodard"},
+  {s:4,day:"Sun",t:"10:39 AM",cls:"First Class",age:"Junior: 9-11",type:"Solo",style:"Jazz",e:251,name:"GLAM",d:"Londyn Godoy"},
+  {s:4,day:"Sun",t:"11:21 AM",cls:"Business Class",age:"Junior: 9-11",type:"Duet/Trio",style:"Jazz",e:266,name:"SUPSTR",d:"Auriella LaVetter, Penelope Liffiton, Olivia Thrush"},
+  {s:4,day:"Sun",t:"11:29 AM",cls:"Business Class",age:"Junior: 9-11",type:"Duet/Trio",style:"Musical Theatre",e:269,name:"DIAMONDS ARE A GIRLS BEST FRIEND",d:"Kamryn Chandler, Harper Warman"},
+  {s:4,brk:"11:38 AM - JUDGES BREAK"},
+  {s:4,brk:"11:45 AM - AWARDS: SESSION 4"},
+  {s:4,brk:"12:15 PM - LUNCH BREAK"},
+
+  // SESSION 5 - Sunday, Feb 8
+  {s:5,day:"Sun",t:"2:05 PM",cls:"Business Class",age:"Teen: 12-14",type:"Solo",style:"Lyrical",e:301,name:"UNSTOPPABLE",d:"Aubrey Dysinger"},
+  {s:5,brk:"2:27 PM - JUDGES BREAK"},
+  {s:5,day:"Sun",t:"3:00 PM",cls:"First Class",age:"Teen: 12-14",type:"Solo",style:"Contemporary",e:320,name:"THE MOUNTAIN IS YOU",d:"Hailey Brunsvold"},
+  {s:5,day:"Sun",t:"3:08 PM",cls:"First Class",age:"Teen: 12-14",type:"Solo",style:"Contemporary",e:323,name:"ROSLYN",d:"Kennedy Woodard"},
+  {s:5,day:"Sun",t:"3:12 PM",cls:"First Class",age:"Teen: 12-14",type:"Solo",style:"Hip Hop",e:324,name:"WE RUN THIS",d:"Hannah Struthers"},
+  {s:5,day:"Sun",t:"3:20 PM",cls:"First Class",age:"Teen: 12-14",type:"Solo",style:"Jazz",e:327,name:"LOVE AGAIN",d:"Lilianna Sotomayor"},
+  {s:5,day:"Sun",t:"3:30 PM",cls:"First Class",age:"Teen: 12-14",type:"Solo",style:"Lyrical",e:331,name:"I SEE RED",d:"Elona Banales"},
+  {s:5,day:"Sun",t:"3:36 PM",cls:"First Class",age:"Teen: 12-14",type:"Solo",style:"Lyrical",e:333,name:"THE BLACKEST DAY",d:"Alana Pope"},
+  {s:5,day:"Sun",t:"3:39 PM",cls:"First Class",age:"Teen: 12-14",type:"Solo",style:"Lyrical",e:334,name:"POSSIBILITY",d:"Ella Sieminski"},
+  {s:5,brk:"4:04 PM - JUDGES BREAK"},
+  {s:5,brk:"4:10 PM - AWARDS: SESSION 5"},
+
+  // SESSION 6 - Sunday, Feb 8
+  {s:6,brk:"5:58 PM - JUDGES BREAK"},
+  {s:6,day:"Sun",t:"6:43 PM",cls:"First Class",age:"Senior: 15-18",type:"Solo",style:"Contemporary",e:385,name:"TWIN SIZE MATTRESS",d:"Aiden Hackathorn"},
+  {s:6,day:"Sun",t:"6:49 PM",cls:"First Class",age:"Senior: 15-18",type:"Solo",style:"Jazz",e:387,name:"DELRESTO",d:"Daniela Padilla"},
+  {s:6,day:"Sun",t:"6:58 PM",cls:"First Class",age:"Senior: 15-18",type:"Solo",style:"Lyrical",e:345,name:"IF I AIN'T GOT YOU",d:"Yamilett Lopez-Gutierrez"},
+  {s:6,day:"Sun",t:"7:10 PM",cls:"First Class",age:"Senior: 15-18",type:"Solo",style:"Open",e:392,name:"DESPERADO",d:"Mercedes Martinez"},
+  {s:6,brk:"7:22 PM - JUDGES BREAK"},
+  {s:6,brk:"7:30 PM - AWARDS: SESSION 6"}
+];
+
+const SESSION_LABELS = {
+  1: "Session 1 - Sat, Feb 7, 8:00 AM - Mini/Petite/Junior Groups",
+  2: "Session 2 - Sat, Feb 7, 2:05 PM - Teen Groups & Senior Duo/Trios",
+  3: "Session 3 - Sat, Feb 7, 8:20 PM - Teen Duo/Trios",
+  4: "Session 4 - Sun, Feb 8, 8:00 AM - Junior Solos & Duo/Trios",
+  5: "Session 5 - Sun, Feb 8, 12:45 PM - Teen Solos",
+  6: "Session 6 - Sun, Feb 8, 4:45 PM - Senior & Adult Solos"
+};
+
+const LS_KEY = "phoenix_az_awards_";
+
+const tbody = document.getElementById("tbody");
+const searchInput = document.getElementById("search");
+const sessionFilter = document.getElementById("sessionFilter");
+const clearBtn = document.getElementById("clearBtn");
+const countInfo = document.getElementById("countInfo");
+
+function getAward(entryNum) {
+  return localStorage.getItem(LS_KEY + entryNum) || "";
+}
+function setAward(entryNum, val) {
+  localStorage.setItem(LS_KEY + entryNum, val);
+}
+
+function render() {
+  const q = searchInput.value.toLowerCase().trim();
+  const sf = sessionFilter.value;
+  let html = "";
+  let lastSession = 0;
+  let visibleCount = 0;
+
+  for (const row of DATA) {
+    // Session filter
+    if (sf && String(row.s) !== sf) continue;
+
+    const isBreak = !!row.brk;
+    const isEntry = !!row.e;
+
+    // Search filter - only applies to entry rows
+    if (q && isEntry) {
+      const nameMatch = row.name.toLowerCase().includes(q);
+      const dancerMatch = row.d.toLowerCase().includes(q);
+      if (!nameMatch && !dancerMatch) continue;
+    }
+    // Hide breaks when searching
+    if (q && isBreak) continue;
+
+    // Session header row
+    if (row.s !== lastSession) {
+      lastSession = row.s;
+      html += `<tr class="session-header"><td colspan="11">${SESSION_LABELS[row.s]}</td></tr>`;
+    }
+
+    if (isBreak) {
+      html += `<tr class="break-row"><td colspan="11">${esc(row.brk)}</td></tr>`;
+    } else if (isEntry) {
+      visibleCount++;
+      const award = esc(getAward(row.e));
+      html += `<tr class="entry-row" tabindex="0" aria-expanded="false" title="Tap to show details">
+        <td data-label="Session">${row.s}</td>
+        <td data-label="Day">${esc(row.day)}</td>
+        <td data-label="Time" style="white-space:nowrap">${esc(row.t)}</td>
+        <td data-label="Class">${esc(row.cls)}</td>
+        <td data-label="Age Division" style="white-space:nowrap">${esc(row.age)}</td>
+        <td data-label="Type">${esc(row.type)}</td>
+        <td data-label="Style">${esc(row.style)}</td>
+        <td data-label="Entry #" class="entry-num">${row.e}</td>
+        <td data-label="Dance Name" class="dance-name">${esc(row.name)}</td>
+        <td data-label="Dancers" class="dancers-cell">${esc(row.d)}</td>
+        <td data-label="Awards"><input class="awards-input" data-entry="${row.e}" value="${award}" placeholder="-"></td>
+      </tr>`;
+    }
+  }
+
+  tbody.innerHTML = html;
+  countInfo.textContent = `Showing ${visibleCount} of 46 entries`;
+
+  // Attach award input listeners
+  tbody.querySelectorAll(".awards-input").forEach(input => {
+    input.addEventListener("input", function() {
+      setAward(this.dataset.entry, this.value);
+    });
+  });
+}
+
+function esc(str) {
+  const d = document.createElement("div");
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function isMobileCardView() {
+  return window.matchMedia("(max-width: 760px)").matches;
+}
+
+function toggleEntryRow(row) {
+  const expanded = row.classList.toggle("is-expanded");
+  row.setAttribute("aria-expanded", expanded ? "true" : "false");
+}
+
+tbody.addEventListener("click", event => {
+  const row = event.target.closest("tr.entry-row");
+  if (!row || !isMobileCardView()) return;
+  if (event.target.closest("input, select, textarea, button, a, label")) return;
+  toggleEntryRow(row);
+});
+
+tbody.addEventListener("keydown", event => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const row = event.target.closest("tr.entry-row");
+  if (!row || !isMobileCardView()) return;
+  if (event.target.closest("input, select, textarea, button, a, label")) return;
+  event.preventDefault();
+  toggleEntryRow(row);
+});
+
+searchInput.addEventListener("input", render);
+sessionFilter.addEventListener("change", render);
+clearBtn.addEventListener("click", () => {
+  searchInput.value = "";
+  sessionFilter.value = "";
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
+

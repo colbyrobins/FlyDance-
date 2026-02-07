@@ -1,0 +1,8 @@
+services:
+  phoenix-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.phoenix
+    ports:
+      - "8080:80"
+    restart: unless-stopped

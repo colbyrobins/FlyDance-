@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: dancecomp-phoenix
+    env: docker
+    dockerfilePath: ./Dockerfile.phoenix
+    dockerContext: .
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: "80"
