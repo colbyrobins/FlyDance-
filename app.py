@@ -939,6 +939,56 @@ def api_put_competition_notes(slug: str):
     return jsonify({"competition_notes": competition_notes})
 
 
+@app.put("/api/competitions/<slug>/medals")
+def api_put_competition_medals(slug: str):
+    with connect_db() as conn:
+        comp = get_competition_by_slug(conn, slug, include_unpublished=is_admin())
+        if comp is None:
+            abort(404)
+        if comp["status"] != "published" and not is_admin():
+            abort(404)
+        if not has_award_edit_permission(int(comp["id"])):
+            return jsonify({"error": "Medal editing is locked. Unlock with PIN."}), 403
+
+        payload = request.get_json(silent=True) or {}
+        medal_system_name = normalize_space(
+            str(payload.get("medal_system_name", comp["medal_system_name"] or DEFAULT_MEDAL_PRESET))
+        ).lower()
+        if medal_system_name not in MEDAL_PRESETS:
+            medal_system_name = "custom"
+
+        medal_options_payload = payload.get("medal_options", [])
+        if isinstance(medal_options_payload, str):
+            medal_options_raw = [part for part in re.split(r"[\r\n,]+", medal_options_payload) if part]
+        elif isinstance(medal_options_payload, list):
+            medal_options_raw = medal_options_payload
+        else:
+            return jsonify({"error": "medal_options must be a list or string"}), 400
+
+        medal_options = normalize_medal_options(medal_options_raw, medal_system_name)
+        if len(medal_options) > 30:
+            return jsonify({"error": "medal_options cannot exceed 30 values"}), 400
+
+        conn.execute(
+            """
+            UPDATE competitions
+            SET medal_system_name = ?,
+                medal_options_json = ?,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """,
+            (medal_system_name, json.dumps(medal_options), comp["id"]),
+        )
+        conn.commit()
+
+    return jsonify(
+        {
+            "medal_system_name": medal_system_name,
+            "medal_options": medal_options,
+        }
+    )
+
+
 def parse_editor_form(form: dict, conn: sqlite3.Connection, existing: sqlite3.Row | None = None):
     name = normalize_space(form.get("name", ""))
     if not name:

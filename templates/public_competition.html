@@ -6,86 +6,420 @@
 <title>{{ competition.name }}</title>
 <style>
 :root{--bg:#f5f5f7;--card:#fff;--line:#ddd;--accent:#6a1b9a;--muted:#666}
-*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Roboto,sans-serif;background:var(--bg);color:#222}[hidden]{display:none!important}
-.app{display:flex;min-height:100vh}.side{width:260px;background:#f2edf8;border-right:1px solid #ded6ea;padding:12px;overflow:auto}
-.side h2{margin:0 0 8px;font-size:1rem}.comp-list{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+*{box-sizing:border-box}
+body{margin:0;font-family:Segoe UI,Roboto,sans-serif;background:var(--bg);color:#222}
+[hidden]{display:none!important}
+.app{display:flex;min-height:100vh}
+.side{width:260px;background:#f2edf8;border-right:1px solid #ded6ea;padding:12px;overflow:auto}
+.side h2{margin:0 0 8px;font-size:1rem}
+.comp-list{list-style:none;padding:0;margin:0;display:grid;gap:8px}
 .comp-list a{display:block;text-decoration:none;color:#3a2a4c;border:1px solid #d9cde9;border-radius:8px;padding:8px;background:#fff;font-size:.85rem}
-.comp-list a.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}.main{flex:1;padding:12px;min-width:0}
-.top{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:10px}.btn{padding:8px 11px;border:1px solid var(--line);border-radius:6px;background:#fff;cursor:pointer;text-decoration:none;color:#222;font-size:.88rem}
-.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}h1{margin:0;text-align:center;color:var(--accent);font-size:1.45rem}.sub{text-align:center;color:var(--muted);margin:5px 0 12px}
-.note{background:#fff5db;border:1px solid #f2dd97;padding:8px;border-radius:8px;margin-bottom:10px;text-align:center;color:#7b5900}.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:10px}
-#specialAwardsList{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:6px}#specialAwardsList li{border:1px solid #ece2f7;border-radius:8px;padding:8px;background:#fbf8ff}
-.controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;justify-content:center}.controls input,.controls select,.controls button{padding:8px;border:1px solid var(--line);border-radius:6px;background:#fff}
-.controls input{width:320px;max-width:100%}.wrap{overflow:auto;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.08)}table{width:100%;border-collapse:collapse;background:#fff;min-width:940px;font-size:.85rem}
-th{background:var(--accent);color:#fff;padding:9px 7px;text-align:left;font-size:.8rem;position:sticky;top:0}td{padding:7px;border-bottom:1px solid #eee;vertical-align:top}
-tr.session td{background:var(--accent);color:#fff;font-weight:700}tr.brk td{background:#f0e6f6;color:var(--accent);font-style:italic;font-weight:600}.entry{font-weight:700;color:var(--accent)}
-.award-cell{display:grid;gap:5px}.small{font-size:.78rem;color:#5d5068;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}.award-actions{display:flex;gap:6px;flex-wrap:wrap}
-.count{text-align:center;color:var(--muted);font-size:.83rem;padding:10px 0 20px}.modal-bg{position:fixed;inset:0;background:rgba(28,18,37,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
-.modal{width:min(460px,100%);background:#fff;border:1px solid #dacde9;border-radius:12px;padding:12px}.mhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.mclose{width:34px;height:34px;border:1px solid #c8bed7;border-radius:8px;background:#fff;cursor:pointer}
-.modal select,.modal textarea{width:100%;padding:10px;border:1px solid #d8c8ea;border-radius:8px}.modal textarea{min-height:150px;resize:vertical}.mact{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}.mact button{padding:8px 12px;border:1px solid #bfb5cc;border-radius:8px;background:#fff;cursor:pointer}.mact .primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.comp-list a.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.main{flex:1;padding:12px;min-width:0}
+.top{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:10px}
+.btn{padding:8px 11px;border:1px solid var(--line);border-radius:6px;background:#fff;cursor:pointer;text-decoration:none;color:#222;font-size:.88rem}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+h1{margin:0;text-align:center;color:var(--accent);font-size:1.45rem}
+.sub{text-align:center;color:var(--muted);margin:5px 0 12px}
+.note{background:#fff5db;border:1px solid #f2dd97;padding:8px;border-radius:8px;margin-bottom:10px;text-align:center;color:#7b5900}
+.panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:10px}
+#specialAwardsList{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:6px}
+#specialAwardsList li{border:1px solid #ece2f7;border-radius:8px;padding:8px;background:#fbf8ff}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;justify-content:center}
+.controls input,.controls select,.controls button{padding:8px;border:1px solid var(--line);border-radius:6px;background:#fff}
+.controls input{width:320px;max-width:100%}
+.wrap{overflow:auto;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+table{width:100%;border-collapse:collapse;background:#fff;min-width:1080px;font-size:.85rem}
+th{background:var(--accent);color:#fff;padding:9px 7px;text-align:left;font-size:.8rem;position:sticky;top:0}
+td{padding:7px;border-bottom:1px solid #eee;vertical-align:top}
+tr.session td{background:var(--accent);color:#fff;font-weight:700}
+tr.brk td{background:#f0e6f6;color:var(--accent);font-style:italic;font-weight:600}
+.entry{font-weight:700;color:var(--accent)}
+.award-select,.entry-note-input{width:100%;padding:6px;border:1px solid #d6cde4;border-radius:6px;background:#fff;font-size:.82rem}
+.entry-note-input{min-width:200px}
+.award-select:disabled,.entry-note-input:disabled{background:#f1f1f1;color:#888}
+.count{text-align:center;color:var(--muted);font-size:.83rem;padding:10px 0 20px}
+.modal-bg{position:fixed;inset:0;background:rgba(28,18,37,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal{width:min(480px,100%);background:#fff;border:1px solid #dacde9;border-radius:12px;padding:12px}
+.mhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.mclose{width:34px;height:34px;border:1px solid #c8bed7;border-radius:8px;background:#fff;cursor:pointer}
+.modal textarea{width:100%;padding:10px;border:1px solid #d8c8ea;border-radius:8px;min-height:150px;resize:vertical;font-family:Consolas,monospace}
+.mhelp{font-size:.8rem;color:#6b5a80;margin-top:6px}
+.mact{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+.mact button{padding:8px 12px;border:1px solid #bfb5cc;border-radius:8px;background:#fff;cursor:pointer}
+.mact .primary{background:var(--accent);border-color:var(--accent);color:#fff}
 @media(max-width:980px){.side{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);transition:.2s;z-index:25}body.menu-open .side{transform:translateX(0)}.controls input,.controls select,.controls button{width:100%}}
-@media(max-width:760px){table{min-width:0;border-collapse:separate;border-spacing:0 10px;background:transparent}thead{display:none}tbody tr{display:block;background:#fff;border:1px solid #ececec;border-radius:10px;padding:7px 9px;box-shadow:0 1px 3px rgba(0,0,0,.06)}tbody tr.row{cursor:pointer}tbody tr td{display:grid;grid-template-columns:minmax(84px,38%) minmax(0,1fr);gap:8px;padding:6px 0;border-bottom:1px solid #f3f3f3;overflow-wrap:anywhere}tbody tr td:before{content:attr(data-label);font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase}tbody tr.row td{display:none}tbody tr.row td[data-label="Day"],tbody tr.row td[data-label="Time"],tbody tr.row td[data-label="Entry #"],tbody tr.row td[data-label="Dance Name"],tbody tr.row td[data-label="Dancers"]{display:grid}tbody tr.row:not(.open) td{border-bottom:none}tbody tr.row.open td{display:grid}tbody tr.session,tbody tr.brk{border:none;padding:0;box-shadow:none}tbody tr.session td,tbody tr.brk td{display:block;border-bottom:none;padding:10px}tbody tr.session td:before,tbody tr.brk td:before{content:none}.small{max-width:100%;white-space:pre-wrap}}
+@media(max-width:760px){
+table{min-width:0;border-collapse:separate;border-spacing:0 10px;background:transparent}
+thead{display:none}
+tbody tr{display:block;background:#fff;border:1px solid #ececec;border-radius:10px;padding:7px 9px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+tbody tr.row{cursor:pointer}
+tbody tr td{display:grid;grid-template-columns:minmax(84px,38%) minmax(0,1fr);gap:8px;padding:6px 0;border-bottom:1px solid #f3f3f3;overflow-wrap:anywhere}
+tbody tr td:before{content:attr(data-label);font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase}
+tbody tr.row td{display:none}
+tbody tr.row td[data-label="Day"],tbody tr.row td[data-label="Time"],tbody tr.row td[data-label="Entry #"],tbody tr.row td[data-label="Dance Name"],tbody tr.row td[data-label="Dancers"],tbody tr.row td[data-label="Medal"],tbody tr.row td[data-label="Note"]{display:grid}
+tbody tr.row:not(.open) td{border-bottom:none}
+tbody tr.row.open td{display:grid}
+tbody tr.session,tbody tr.brk{border:none;padding:0;box-shadow:none}
+tbody tr.session td,tbody tr.brk td{display:block;border-bottom:none;padding:10px}
+}
 </style>
 </head>
 <body>
 <div class="app">
-<aside class="side" id="side"><h2>Competitions</h2><ul class="comp-list" id="competitionList"></ul></aside>
-<main class="main">
-  <div class="top"><button class="btn" id="menuBtn">Menu</button><div style="display:flex;gap:8px;flex-wrap:wrap">{% if is_admin %}<a class="btn" href="/admin">Admin</a>{% endif %}<button class="btn" id="compNotesBtn">Notes</button><button class="btn primary" id="unlockBtn">Unlock Awards</button></div></div>
-  {% if competition.status != 'published' %}<div class="note">Draft preview - only admins can view this competition.</div>{% endif %}
-  <h1 id="title">{{ competition.name }}</h1>
-  <p class="sub" id="subtitle"></p>
-  <section class="panel" id="specialAwardsPanel" hidden><strong>Special Awards</strong><ul id="specialAwardsList"></ul></section>
-  <div class="note" id="competitionNotesPreview" hidden></div>
-  <div class="controls"><input id="search" type="text" placeholder="Search dance or dancer"><select id="sessionFilter"><option value="">All Sessions</option></select><button id="clearBtn">Clear</button></div>
-  <div class="wrap"><table><thead><tr><th>Session</th><th>Day</th><th>Time</th><th>Class</th><th>Age</th><th>Type</th><th>Style</th><th>Entry #</th><th>Dance Name</th><th>Dancers</th><th>Awards</th></tr></thead><tbody id="tbody"></tbody></table></div>
-  <p class="count" id="countInfo"></p>
+  <aside class="side" id="side">
+    <h2>Competitions</h2>
+    <ul class="comp-list" id="competitionList"></ul>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <button class="btn" id="menuBtn">Menu</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        {% if is_admin %}<a class="btn" href="/admin">Admin</a>{% endif %}
+        <button class="btn" id="compNotesBtn">Notes</button>
+        <button class="btn" id="medalListBtn" hidden>Edit Medal List</button>
+        <button class="btn primary" id="unlockBtn">Unlock Awards</button>
+      </div>
+    </div>
+    {% if competition.status != 'published' %}<div class="note">Draft preview - only admins can view this competition.</div>{% endif %}
+    <h1 id="title">{{ competition.name }}</h1>
+    <p class="sub" id="subtitle"></p>
 
-  <div class="modal-bg" id="medalModal" hidden><div class="modal" role="dialog" aria-modal="true"><div class="mhead"><h3 id="medalTitle">Select Medal</h3><button class="mclose" id="medalClose" type="button">x</button></div><select id="medalSelect"></select><p id="medalHelp" style="font-size:.8rem;color:#6b5a80"></p><div class="mact"><button id="medalCancel" type="button">Cancel</button><button class="primary" id="medalSave" type="button">Save</button></div></div></div>
-  <div class="modal-bg" id="entryNoteModal" hidden><div class="modal" role="dialog" aria-modal="true"><div class="mhead"><h3 id="entryNoteTitle">Entry Note</h3><button class="mclose" id="entryNoteClose" type="button">x</button></div><textarea id="entryNoteInput" maxlength="2000" placeholder="Top Overall, Judge Special, reminders"></textarea><div class="mact"><button id="entryNoteCancel" type="button">Cancel</button><button class="primary" id="entryNoteSave" type="button">Save</button></div></div></div>
-  <div class="modal-bg" id="compNoteModal" hidden><div class="modal" role="dialog" aria-modal="true"><div class="mhead"><h3>Competition Notes</h3><button class="mclose" id="compNoteClose" type="button">x</button></div><textarea id="compNoteInput" maxlength="4000" placeholder="General competition notes"></textarea><div class="mact"><button id="compNoteCancel" type="button">Cancel</button><button class="primary" id="compNoteSave" type="button">Save</button></div></div></div>
+    <section class="panel" id="specialAwardsPanel" hidden>
+      <strong>Special Awards</strong>
+      <ul id="specialAwardsList"></ul>
+    </section>
+    <div class="note" id="competitionNotesPreview" hidden></div>
+
+    <div class="controls">
+      <input id="search" type="text" placeholder="Search dance or dancer">
+      <select id="sessionFilter"><option value="">All Sessions</option></select>
+      <button id="clearBtn">Clear</button>
+    </div>
+
+    <div class="wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Session</th><th>Day</th><th>Time</th><th>Class</th><th>Age</th><th>Type</th><th>Style</th>
+            <th>Entry #</th><th>Dance Name</th><th>Dancers</th><th>Medal</th><th>Note</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    <p class="count" id="countInfo"></p>
+
+    <div class="modal-bg" id="compNoteModal" hidden>
+      <div class="modal" role="dialog" aria-modal="true">
+        <div class="mhead"><h3>Competition Notes</h3><button class="mclose" id="compNoteClose" type="button">x</button></div>
+        <textarea id="compNoteInput" maxlength="4000" placeholder="General competition notes"></textarea>
+        <div class="mact"><button id="compNoteCancel" type="button">Cancel</button><button class="primary" id="compNoteSave" type="button">Save</button></div>
+      </div>
+    </div>
+
+    <div class="modal-bg" id="medalListModal" hidden>
+      <div class="modal" role="dialog" aria-modal="true">
+        <div class="mhead"><h3>Competition Medal List</h3><button class="mclose" id="medalListClose" type="button">x</button></div>
+        <textarea id="medalListInput" placeholder="One medal per line"></textarea>
+        <p class="mhelp">Example: Platinum, High Gold, Gold, Silver, Bronze</p>
+        <div class="mact"><button id="medalListCancel" type="button">Cancel</button><button class="primary" id="medalListSave" type="button">Save</button></div>
+      </div>
+    </div>
+  </main>
+</div>
 
 <script>
-const CURRENT_SLUG={{ competition.slug|tojson }},IS_ADMIN={{ "true" if is_admin else "false" }};
+const CURRENT_SLUG={{ competition.slug|tojson }};
+const IS_ADMIN={{ "true" if is_admin else "false" }};
 const byId=(id)=>document.getElementById(id),tbody=byId("tbody"),searchInput=byId("search"),sessionFilter=byId("sessionFilter"),countInfo=byId("countInfo");
-let DATA=[],SESSION_LABELS={},medalOptions=[],specialAwards=[],competitionNotes="",awardsByEntry={},canEditAwards=IS_ADMIN,activeMedalEntry=null,activeEntryNote=null;
+let DATA=[],SESSION_LABELS={},medalOptions=[],specialAwards=[],competitionNotes="",awardsByEntry={},canEditAwards=IS_ADMIN;
+const noteTimers=new Map();
+
 function esc(v){const d=document.createElement("div");d.textContent=v==null?"":String(v);return d.innerHTML}
 function awardState(v){if(v&&typeof v==="object")return{medal:typeof v.medal==="string"?v.medal:"",entry_note:typeof v.entry_note==="string"?v.entry_note:""};if(typeof v==="string")return{medal:"",entry_note:v};return{medal:"",entry_note:""}}
-function getAward(n){return awardState(awardsByEntry[String(n)])} function setAward(n,v){awardsByEntry[String(n)]=awardState(v)}
-function setUnlockVisibility(){byId("unlockBtn").style.display=canEditAwards||IS_ADMIN?"none":"inline-block"}
-function updateCompNotesPreview(){const t=(competitionNotes||"").trim();byId("competitionNotesPreview").hidden=!t;byId("competitionNotesPreview").textContent=t||""}
-function renderSpecialAwards(){const panel=byId("specialAwardsPanel"),list=byId("specialAwardsList");if(!Array.isArray(specialAwards)||!specialAwards.length){panel.hidden=true;list.innerHTML="";return;}panel.hidden=false;list.innerHTML=specialAwards.map((a)=>{const parts=[];if(a.category)parts.push(a.category);if(a.placement)parts.push(a.placement);if(a.entry_num!==null&&a.entry_num!==undefined&&a.entry_num!=="")parts.push(`Entry #${a.entry_num}`);const meta=parts.length?`<div style="color:#6c6177">${esc(parts.join(" - "))}</div>`:"";const note=a.note?`<div style="color:#4f3e61;white-space:pre-wrap;overflow-wrap:anywhere">${esc(a.note)}</div>`:"";return `<li><div style="font-weight:700">${esc(a.title||"Special Award")}</div>${meta}${note}</li>`;}).join("")}
-async function loadCompetitionList(){const res=await fetch("/api/competitions?published=1");const comps=await res.json();byId("competitionList").innerHTML=comps.map((c)=>{const active=c.slug===CURRENT_SLUG?"active":"";const dt=c.event_end_date?`${c.event_start_date} to ${c.event_end_date}`:c.event_start_date;return `<li><a class="${active}" href="/c/${encodeURIComponent(c.slug)}">${esc(c.name)}<div style="color:#6f6480;font-size:.76rem">${esc(dt)}</div></a></li>`;}).join("")}
-async function loadSchedule(){const res=await fetch(`/api/competitions/${encodeURIComponent(CURRENT_SLUG)}/schedule`);if(!res.ok)throw new Error(`schedule ${res.status}`);const p=await res.json();DATA=Array.isArray(p.rows)?p.rows:[];SESSION_LABELS=p.session_labels||{};canEditAwards=!!p.can_edit_awards||IS_ADMIN;medalOptions=Array.isArray(p.medal_options)?p.medal_options:[];specialAwards=Array.isArray(p.special_awards)?p.special_awards:[];competitionNotes=typeof p.competition_notes==="string"?p.competition_notes:"";byId("title").textContent=p.competition&&p.competition.name?p.competition.name:"Dance Competition";const parts=[];if(p.competition&&p.competition.location)parts.push(p.competition.location);if(p.competition&&p.competition.event_start_date)parts.push(p.competition.event_end_date?`${p.competition.event_start_date} to ${p.competition.event_end_date}`:p.competition.event_start_date);byId("subtitle").textContent=parts.join(" - ");setUnlockVisibility();updateCompNotesPreview();renderSpecialAwards();populateSessionFilter();}
-async function loadAwards(){const res=await fetch(`/api/competitions/${encodeURIComponent(CURRENT_SLUG)}/awards`);if(!res.ok)throw new Error(`awards ${res.status}`);const raw=await res.json(),norm={};for(const [k,v] of Object.entries(raw||{}))norm[String(k)]=awardState(v);awardsByEntry=norm;}
-function populateSessionFilter(){const keys=Object.keys(SESSION_LABELS).map(Number).sort((a,b)=>a-b),cur=sessionFilter.value;sessionFilter.innerHTML='<option value="">All Sessions</option>'+keys.map((k)=>`<option value="${k}">${esc(SESSION_LABELS[String(k)]||`Session ${k}`)}</option>`).join("");sessionFilter.value=cur;}
-async function saveAward(entryNum,patch){const cur=getAward(entryNum),payload={medal:typeof patch.medal==="string"?patch.medal:cur.medal,entry_note:typeof patch.entry_note==="string"?patch.entry_note:cur.entry_note};const res=await fetch(`/api/competitions/${encodeURIComponent(CURRENT_SLUG)}/awards/${encodeURIComponent(entryNum)}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||`save ${res.status}`)}const saved=await res.json();setAward(entryNum,{medal:typeof saved.medal==="string"?saved.medal:payload.medal,entry_note:typeof saved.entry_note==="string"?saved.entry_note:payload.entry_note});}
-async function saveCompNotes(txt){const res=await fetch(`/api/competitions/${encodeURIComponent(CURRENT_SLUG)}/notes`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({competition_notes:txt})});if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||`save ${res.status}`)}const p=await res.json();competitionNotes=typeof p.competition_notes==="string"?p.competition_notes:txt;updateCompNotesPreview();}
-function render(){const q=searchInput.value.toLowerCase().trim(),sf=sessionFilter.value;let html="",last=0,shown=0;for(const r of DATA){if(sf&&String(r.s)!==sf)continue;const isBreak=!!r.brk,isEntry=r.e!==undefined&&r.e!==null&&r.e!=="";if(q&&isEntry){const m1=(r.name||"").toLowerCase().includes(q),m2=(r.d||"").toLowerCase().includes(q);if(!m1&&!m2)continue;}if(q&&isBreak)continue;if(r.s!==last){last=r.s;html+=`<tr class="session"><td colspan="11">${esc(SESSION_LABELS[String(r.s)]||`Session ${r.s}`)}</td></tr>`;}if(isBreak){html+=`<tr class="brk"><td colspan="11">${esc(r.brk)}</td></tr>`;continue;}if(!isEntry)continue;shown++;const a=getAward(r.e),medal=a.medal||"-",note=a.entry_note||"",preview=note?`${note.slice(0,70)}${note.length>70?"...":""}`:"-",noteAction=note?(canEditAwards?"Edit Note":"View Note"):(canEditAwards?"Add Note":"No Note"),canOpenNote=canEditAwards||!!note;html+=`<tr class="row" tabindex="0" aria-expanded="false" title="Tap to show details"><td data-label="Session">${r.s}</td><td data-label="Day">${esc(r.day||"")}</td><td data-label="Time">${esc(r.t||"")}</td><td data-label="Class">${esc(r.cls||"")}</td><td data-label="Age">${esc(r.age||"")}</td><td data-label="Type">${esc(r.type||"")}</td><td data-label="Style">${esc(r.style||"")}</td><td data-label="Entry #" class="entry">${esc(String(r.e))}</td><td data-label="Dance Name">${esc(r.name||"")}</td><td data-label="Dancers">${esc(r.d||"")}</td><td data-label="Awards"><div class="award-cell"><div>${esc(medal)}</div><div class="small">${esc(preview)}</div><div class="award-actions"><button class="btn medal-btn" data-entry="${esc(String(r.e))}" type="button" ${canEditAwards?"":"disabled"}>Select Medal</button><button class="btn note-btn" data-entry="${esc(String(r.e))}" type="button" ${canOpenNote?"":"disabled"}>${esc(noteAction)}</button></div></div></td></tr>`;}
-tbody.innerHTML=html;const total=DATA.filter((r)=>r.e!==undefined&&r.e!==null&&r.e!=="").length;countInfo.textContent=`Showing ${shown} of ${total} entries`;}
-function isMobile(){return window.matchMedia("(max-width:760px)").matches} function toggleRow(row){const open=row.classList.toggle("open");row.setAttribute("aria-expanded",open?"true":"false")}
-function openMedal(entry){if(!canEditAwards)return;activeMedalEntry=Number(entry);const row=DATA.find((r)=>Number(r.e)===activeMedalEntry);byId("medalTitle").textContent=`Select Medal - #${activeMedalEntry} ${row&&row.name?row.name:""}`.trim();const cur=getAward(activeMedalEntry),opts=['<option value="">No Medal</option>'];for(const m of medalOptions)opts.push(`<option value="${esc(m)}">${esc(m)}</option>`);byId("medalSelect").innerHTML=opts.join("");byId("medalSelect").value=cur.medal||"";byId("medalHelp").textContent=`Available medals: ${medalOptions.join(", ")||"None"}`;byId("medalModal").hidden=false;requestAnimationFrame(()=>byId("medalSelect").focus())}
-function closeMedal(){activeMedalEntry=null;byId("medalModal").hidden=true}
-async function saveMedal(){if(!canEditAwards||activeMedalEntry==null)return;try{await saveAward(activeMedalEntry,{medal:byId("medalSelect").value});closeMedal();render();}catch(err){alert(err.message||"Unable to save medal")}}
-function openEntryNote(entry){activeEntryNote=Number(entry);const row=DATA.find((r)=>Number(r.e)===activeEntryNote);byId("entryNoteTitle").textContent=`Entry Note - #${activeEntryNote} ${row&&row.name?row.name:""}`.trim();byId("entryNoteInput").value=getAward(activeEntryNote).entry_note||"";byId("entryNoteInput").readOnly=!canEditAwards;byId("entryNoteSave").hidden=!canEditAwards;byId("entryNoteModal").hidden=false;requestAnimationFrame(()=>byId("entryNoteInput").focus())}
-function closeEntryNote(){activeEntryNote=null;byId("entryNoteModal").hidden=true}
-async function saveEntryNote(){if(!canEditAwards||activeEntryNote==null)return;try{await saveAward(activeEntryNote,{entry_note:byId("entryNoteInput").value.trim()});closeEntryNote();render();}catch(err){alert(err.message||"Unable to save note")}}
-function openCompNote(){byId("compNoteInput").value=competitionNotes||"";byId("compNoteInput").readOnly=!canEditAwards;byId("compNoteSave").hidden=!canEditAwards;byId("compNoteModal").hidden=false;requestAnimationFrame(()=>byId("compNoteInput").focus())}
+function getAward(n){return awardState(awardsByEntry[String(n)])}
+function setAward(n,v){awardsByEntry[String(n)]=awardState(v)}
+
+function setUnlockVisibility(){
+  byId("unlockBtn").style.display=canEditAwards||IS_ADMIN?"none":"inline-block";
+  byId("medalListBtn").hidden=!canEditAwards;
+}
+function updateCompNotesPreview(){
+  const t=(competitionNotes||"").trim();
+  byId("competitionNotesPreview").hidden=!t;
+  byId("competitionNotesPreview").textContent=t||"";
+}
+function renderSpecialAwards(){
+  const panel=byId("specialAwardsPanel"),list=byId("specialAwardsList");
+  if(!Array.isArray(specialAwards)||!specialAwards.length){panel.hidden=true;list.innerHTML="";return;}
+  panel.hidden=false;
+  list.innerHTML=specialAwards.map((a)=>{
+    const parts=[];
+    if(a.category)parts.push(a.category);
+    if(a.placement)parts.push(a.placement);
+    if(a.entry_num!==null&&a.entry_num!==undefined&&a.entry_num!=="")parts.push(`Entry #${a.entry_num}`);
+    const meta=parts.length?`<div style="color:#6c6177">${esc(parts.join(" - "))}</div>`:"";
+    const note=a.note?`<div style="color:#4f3e61;white-space:pre-wrap;overflow-wrap:anywhere">${esc(a.note)}</div>`:"";
+    return `<li><div style="font-weight:700">${esc(a.title||"Special Award")}</div>${meta}${note}</li>`;
+  }).join("");
+}
+
+async function loadCompetitionList(){
+  const res=await fetch("/api/competitions?published=1");
+  const comps=await res.json();
+  byId("competitionList").innerHTML=comps.map((c)=>{
+    const active=c.slug===CURRENT_SLUG?"active":"";
+    const dt=c.event_end_date?`${c.event_start_date} to ${c.event_end_date}`:c.event_start_date;
+    return `<li><a class="${active}" href="/c/${encodeURIComponent(c.slug)}">${esc(c.name)}<div style="color:#6f6480;font-size:.76rem">${esc(dt)}</div></a></li>`;
+  }).join("");
+}
+async function loadSchedule(){
+  const res=await fetch(`/api/competitions/${encodeURIComponent(CURRENT_SLUG)}/schedule`);
+  if(!res.ok)throw new Error(`schedule ${res.status}`);
+  const p=await res.json();
+  DATA=Array.isArray(p.rows)?p.rows:[];
+  SESSION_LABELS=p.session_labels||{};
+  canEditAwards=!!p.can_edit_awards||IS_ADMIN;
+  medalOptions=Array.isArray(p.medal_options)?p.medal_options:[];
+  specialAwards=Array.isArray(p.special_awards)?p.special_awards:[];
+  competitionNotes=typeof p.competition_notes==="string"?p.competition_notes:"";
+  byId("title").textContent=p.competition&&p.competition.name?p.competition.name:"Dance Competition";
+  const parts=[];
+  if(p.competition&&p.competition.location)parts.push(p.competition.location);
+  if(p.competition&&p.competition.event_start_date)parts.push(p.competition.event_end_date?`${p.competition.event_start_date} to ${p.competition.event_end_date}`:p.competition.event_start_date);
+  byId("subtitle").textContent=parts.join(" - ");
+  setUnlockVisibility();
+  updateCompNotesPreview();
+  renderSpecialAwards();
+  populateSessionFilter();
+}
+async function loadAwards(){
+  const res=await fetch(`/api/competitions/${encodeURIComponent(CURRENT_SLUG)}/awards`);
+  if(!res.ok)throw new Error(`awards ${res.status}`);
+  const raw=await res.json(),norm={};
+  for(const [k,v] of Object.entries(raw||{}))norm[String(k)]=awardState(v);
+  awardsByEntry=norm;
+}
+
+function populateSessionFilter(){
+  const keys=Object.keys(SESSION_LABELS).map(Number).sort((a,b)=>a-b),cur=sessionFilter.value;
+  sessionFilter.innerHTML='<option value="">All Sessions</option>'+keys.map((k)=>`<option value="${k}">${esc(SESSION_LABELS[String(k)]||`Session ${k}`)}</option>`).join("");
+  sessionFilter.value=cur;
+}
+
+async function saveAward(entryNum,patch){
+  const cur=getAward(entryNum),payload={medal:typeof patch.medal==="string"?patch.medal:cur.medal,entry_note:typeof patch.entry_note==="string"?patch.entry_note:cur.entry_note};
+  const res=await fetch(`/api/competitions/${encodeURIComponent(CURRENT_SLUG)}/awards/${encodeURIComponent(entryNum)}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||`save ${res.status}`);}
+  const saved=await res.json();
+  setAward(entryNum,{medal:typeof saved.medal==="string"?saved.medal:payload.medal,entry_note:typeof saved.entry_note==="string"?saved.entry_note:payload.entry_note});
+}
+async function saveCompNotes(txt){
+  const res=await fetch(`/api/competitions/${encodeURIComponent(CURRENT_SLUG)}/notes`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({competition_notes:txt})});
+  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||`save ${res.status}`);}
+  const p=await res.json();
+  competitionNotes=typeof p.competition_notes==="string"?p.competition_notes:txt;
+  updateCompNotesPreview();
+}
+async function saveMedalList(lines){
+  const res=await fetch(`/api/competitions/${encodeURIComponent(CURRENT_SLUG)}/medals`,{
+    method:"PUT",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({medal_system_name:"custom",medal_options:lines}),
+  });
+  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error||`save ${res.status}`);}
+  const p=await res.json();
+  medalOptions=Array.isArray(p.medal_options)?p.medal_options:[];
+}
+
+function medalOptionsHtml(selected){
+  const opts=['<option value="">No Medal</option>'];
+  const values=[...medalOptions];
+  if(selected && !values.some((m)=>m.toLowerCase()===String(selected).toLowerCase()))values.unshift(selected);
+  for(const m of values){
+    const sel=String(m).toLowerCase()===String(selected||"").toLowerCase()?" selected":"";
+    opts.push(`<option value="${esc(m)}"${sel}>${esc(m)}</option>`);
+  }
+  return opts.join("");
+}
+
+function render(){
+  const q=searchInput.value.toLowerCase().trim(),sf=sessionFilter.value;
+  let html="",last=0,shown=0;
+  for(const r of DATA){
+    if(sf&&String(r.s)!==sf)continue;
+    const isBreak=!!r.brk,isEntry=r.e!==undefined&&r.e!==null&&r.e!=="";
+    if(q&&isEntry){
+      const m1=(r.name||"").toLowerCase().includes(q),m2=(r.d||"").toLowerCase().includes(q);
+      if(!m1&&!m2)continue;
+    }
+    if(q&&isBreak)continue;
+    if(r.s!==last){
+      last=r.s;
+      html+=`<tr class="session"><td colspan="12">${esc(SESSION_LABELS[String(r.s)]||`Session ${r.s}`)}</td></tr>`;
+    }
+    if(isBreak){
+      html+=`<tr class="brk"><td colspan="12">${esc(r.brk)}</td></tr>`;
+      continue;
+    }
+    if(!isEntry)continue;
+    shown++;
+    const a=getAward(r.e);
+    html+=`<tr class="row" tabindex="0" aria-expanded="false" title="Tap to show details">
+      <td data-label="Session">${r.s}</td>
+      <td data-label="Day">${esc(r.day||"")}</td>
+      <td data-label="Time">${esc(r.t||"")}</td>
+      <td data-label="Class">${esc(r.cls||"")}</td>
+      <td data-label="Age">${esc(r.age||"")}</td>
+      <td data-label="Type">${esc(r.type||"")}</td>
+      <td data-label="Style">${esc(r.style||"")}</td>
+      <td data-label="Entry #" class="entry">${esc(String(r.e))}</td>
+      <td data-label="Dance Name">${esc(r.name||"")}</td>
+      <td data-label="Dancers">${esc(r.d||"")}</td>
+      <td data-label="Medal"><select class="award-select medal-select" data-entry="${esc(String(r.e))}" ${canEditAwards?"":"disabled"}>${medalOptionsHtml(a.medal||"")}</select></td>
+      <td data-label="Note"><input class="entry-note-input note-input" data-entry="${esc(String(r.e))}" value="${esc(a.entry_note||"")}" placeholder="Add note" ${canEditAwards?"":"disabled"}></td>
+    </tr>`;
+  }
+  tbody.innerHTML=html;
+  const total=DATA.filter((r)=>r.e!==undefined&&r.e!==null&&r.e!=="").length;
+  countInfo.textContent=`Showing ${shown} of ${total} entries`;
+}
+
+function isMobile(){return window.matchMedia("(max-width:760px)").matches}
+function toggleRow(row){const open=row.classList.toggle("open");row.setAttribute("aria-expanded",open?"true":"false")}
+
+tbody.addEventListener("click",(e)=>{
+  const row=e.target.closest("tr.row");
+  if(!row||!isMobile())return;
+  if(e.target.closest("input,select,textarea,button,a,label"))return;
+  toggleRow(row);
+});
+tbody.addEventListener("keydown",(e)=>{
+  if(e.key!=="Enter"&&e.key!==" ")return;
+  const row=e.target.closest("tr.row");
+  if(!row||!isMobile())return;
+  if(e.target.closest("input,select,textarea,button,a,label"))return;
+  e.preventDefault();
+  toggleRow(row);
+});
+
+tbody.addEventListener("change",async(e)=>{
+  const medal=e.target.closest(".medal-select");
+  if(!medal)return;
+  const entry=Number(medal.dataset.entry);
+  try{
+    await saveAward(entry,{medal:medal.value});
+  }catch(err){
+    alert(err.message||"Unable to save medal");
+  }
+});
+
+tbody.addEventListener("input",(e)=>{
+  const note=e.target.closest(".note-input");
+  if(!note)return;
+  const entry=Number(note.dataset.entry);
+  const prev=noteTimers.get(entry);
+  if(prev)clearTimeout(prev);
+  const timer=setTimeout(async()=>{
+    noteTimers.delete(entry);
+    try{await saveAward(entry,{entry_note:note.value.trim()});}catch(err){console.error(err);}
+  },450);
+  noteTimers.set(entry,timer);
+});
+tbody.addEventListener("blur",async(e)=>{
+  const note=e.target.closest(".note-input");
+  if(!note)return;
+  const entry=Number(note.dataset.entry);
+  const prev=noteTimers.get(entry);
+  if(prev){clearTimeout(prev);noteTimers.delete(entry);}
+  try{await saveAward(entry,{entry_note:note.value.trim()});}catch(err){console.error(err);}
+},true);
+
+searchInput.addEventListener("input",render);
+sessionFilter.addEventListener("change",render);
+byId("clearBtn").addEventListener("click",()=>{searchInput.value="";sessionFilter.value="";render();});
+
+byId("unlockBtn").addEventListener("click",async()=>{
+  const pin=window.prompt("Enter competition PIN to edit awards:");
+  if(!pin)return;
+  try{
+    const res=await fetch(`/api/competitions/${encodeURIComponent(CURRENT_SLUG)}/pin/unlock`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin:pin})});
+    if(!res.ok){
+      const p=await res.json().catch(()=>({}));
+      alert(p.error||"Could not unlock awards editing");
+      return;
+    }
+    canEditAwards=true;
+    setUnlockVisibility();
+    render();
+  }catch(_){
+    alert("Network error while unlocking PIN");
+  }
+});
+
+function openCompNote(){
+  byId("compNoteInput").value=competitionNotes||"";
+  byId("compNoteInput").readOnly=!canEditAwards;
+  byId("compNoteSave").hidden=!canEditAwards;
+  byId("compNoteModal").hidden=false;
+  requestAnimationFrame(()=>byId("compNoteInput").focus());
+}
 function closeCompNote(){byId("compNoteModal").hidden=true}
-async function saveCompNote(){if(!canEditAwards)return;try{await saveCompNotes(byId("compNoteInput").value.trim());closeCompNote();}catch(err){alert(err.message||"Unable to save notes")}}
-tbody.addEventListener("click",(e)=>{const mb=e.target.closest(".medal-btn");if(mb){e.preventDefault();e.stopPropagation();const row=mb.closest("tr.row");if(row&&isMobile()&&!row.classList.contains("open")){toggleRow(row);return;}openMedal(mb.dataset.entry);return;}const nb=e.target.closest(".note-btn");if(nb){e.preventDefault();e.stopPropagation();const row=nb.closest("tr.row");if(row&&isMobile()&&!row.classList.contains("open")){toggleRow(row);return;}if(nb.disabled)return;openEntryNote(nb.dataset.entry);return;}const row=e.target.closest("tr.row");if(!row||!isMobile())return;if(e.target.closest("input,select,textarea,button,a,label"))return;toggleRow(row);});
-tbody.addEventListener("keydown",(e)=>{if(e.key!=="Enter"&&e.key!==" ")return;const row=e.target.closest("tr.row");if(!row||!isMobile())return;if(e.target.closest("input,select,textarea,button,a,label"))return;e.preventDefault();toggleRow(row);});
-searchInput.addEventListener("input",render);sessionFilter.addEventListener("change",render);byId("clearBtn").addEventListener("click",()=>{searchInput.value="";sessionFilter.value="";render();});
-byId("unlockBtn").addEventListener("click",async()=>{const pin=window.prompt("Enter competition PIN to edit awards:");if(!pin)return;try{const res=await fetch(`/api/competitions/${encodeURIComponent(CURRENT_SLUG)}/pin/unlock`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin:pin})});if(!res.ok){const p=await res.json().catch(()=>({}));alert(p.error||"Could not unlock awards editing");return;}canEditAwards=true;setUnlockVisibility();render();}catch(_){alert("Network error while unlocking PIN")}});
-byId("compNotesBtn").addEventListener("click",openCompNote);byId("medalSave").addEventListener("click",saveMedal);byId("medalCancel").addEventListener("click",closeMedal);byId("medalClose").addEventListener("click",closeMedal);byId("medalModal").addEventListener("click",(e)=>{if(e.target===byId("medalModal"))closeMedal();});
-byId("entryNoteSave").addEventListener("click",saveEntryNote);byId("entryNoteCancel").addEventListener("click",closeEntryNote);byId("entryNoteClose").addEventListener("click",closeEntryNote);byId("entryNoteModal").addEventListener("click",(e)=>{if(e.target===byId("entryNoteModal"))closeEntryNote();});
-byId("compNoteSave").addEventListener("click",saveCompNote);byId("compNoteCancel").addEventListener("click",closeCompNote);byId("compNoteClose").addEventListener("click",closeCompNote);byId("compNoteModal").addEventListener("click",(e)=>{if(e.target===byId("compNoteModal"))closeCompNote();});
-document.addEventListener("keydown",(e)=>{if(e.key!=="Escape")return;if(!byId("medalModal").hidden)closeMedal();if(!byId("entryNoteModal").hidden)closeEntryNote();if(!byId("compNoteModal").hidden)closeCompNote();});
+async function saveCompNote(){
+  if(!canEditAwards)return;
+  try{await saveCompNotes(byId("compNoteInput").value.trim());closeCompNote();}
+  catch(err){alert(err.message||"Unable to save notes");}
+}
+
+function openMedalList(){
+  if(!canEditAwards)return;
+  byId("medalListInput").value=medalOptions.join("\n");
+  byId("medalListModal").hidden=false;
+  requestAnimationFrame(()=>byId("medalListInput").focus());
+}
+function closeMedalList(){byId("medalListModal").hidden=true}
+async function saveMedalListFromModal(){
+  if(!canEditAwards)return;
+  const lines=byId("medalListInput").value.split(/\r?\n/).map((v)=>v.trim()).filter((v)=>!!v);
+  try{
+    await saveMedalList(lines);
+    closeMedalList();
+    render();
+  }catch(err){
+    alert(err.message||"Unable to save medal list");
+  }
+}
+
+byId("compNotesBtn").addEventListener("click",openCompNote);
+byId("compNoteSave").addEventListener("click",saveCompNote);
+byId("compNoteCancel").addEventListener("click",closeCompNote);
+byId("compNoteClose").addEventListener("click",closeCompNote);
+byId("compNoteModal").addEventListener("click",(e)=>{if(e.target===byId("compNoteModal"))closeCompNote();});
+
+byId("medalListBtn").addEventListener("click",openMedalList);
+byId("medalListSave").addEventListener("click",saveMedalListFromModal);
+byId("medalListCancel").addEventListener("click",closeMedalList);
+byId("medalListClose").addEventListener("click",closeMedalList);
+byId("medalListModal").addEventListener("click",(e)=>{if(e.target===byId("medalListModal"))closeMedalList();});
+
+document.addEventListener("keydown",(e)=>{
+  if(e.key!=="Escape")return;
+  if(!byId("compNoteModal").hidden)closeCompNote();
+  if(!byId("medalListModal").hidden)closeMedalList();
+});
 byId("menuBtn").addEventListener("click",()=>document.body.classList.toggle("menu-open"));
 document.addEventListener("click",(e)=>{if(!isMobile())return;const inside=e.target.closest("#side")||e.target.closest("#menuBtn");if(!inside)document.body.classList.remove("menu-open");});
-(async function boot(){try{await Promise.all([loadCompetitionList(),loadSchedule(),loadAwards()]);render();}catch(err){console.error(err);countInfo.textContent="Unable to load competition data.";}})();
+
+(async function boot(){
+  try{
+    await Promise.all([loadCompetitionList(),loadSchedule(),loadAwards()]);
+    render();
+  }catch(err){
+    console.error(err);
+    countInfo.textContent="Unable to load competition data.";
+  }
+})();
 </script>
-</main>
-</div>
 </body>
 </html>
